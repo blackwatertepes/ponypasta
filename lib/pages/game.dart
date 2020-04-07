@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../data/words.dart';
+
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title}) : super(key: key);
 
@@ -20,48 +22,27 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> wordList = getRandomWords(words(), 25);
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
         body: GridView.count(
           primary: false,
-          padding: const EdgeInsets.all(20),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('He\'d have you all unravel at the'),
-              color: Colors.teal[100],
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('Heed not the rabble'),
-              color: Colors.teal[200],
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('Sound of screams but the'),
-              color: Colors.teal[300],
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('Who scream'),
-              color: Colors.teal[400],
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('Revolution is coming...'),
-              color: Colors.teal[500],
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text('Revolution, they...'),
-              color: Colors.teal[600],
-            ),
-          ],
+          padding: const EdgeInsets.all(0),
+          crossAxisSpacing: 3,
+          mainAxisSpacing: 3,
+          crossAxisCount: 5,
+          children: wordList.map((word) => _buildTile(context, word)).toList(),
         ));
+  }
+
+  Widget _buildTile(BuildContext context, String word) {
+    return Container(
+      padding: const EdgeInsets.all(0),
+      child: Center(child: Text(word)),
+      color: Colors.grey[300],
+    );
   }
 }
