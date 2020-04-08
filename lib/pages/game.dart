@@ -18,27 +18,37 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> wordList = getRandomWords(words(), 25);
-    List<Tile> tiles = wordList.map((word) => Tile.fromWord(word)).toList();
-
-    List<Player> players = [
-      new Player('red', Colors.red[100], Colors.red, 9),
-      new Player('blue', Colors.blue[100], Colors.blue, 8),
-    ];
-
-    // TODO: DELETE
-    players[0].setScore(3);
-    tiles[0].setOwner(players[0]);
-    tiles[1].setOwner(players[0]);
-    tiles[5].setOwner(players[1]);
-    tiles[6].setOwner(players[1]);
-    tiles[1].select();
-    tiles[6].select();
+    List<String> wordList;
+    List<Tile> tiles;
+    List<Player> players;
 
     // enum TurnState {
     //   codeviewing,
     //   guessing,
     // }
+
+    resetGame() {
+      setState(() {
+        wordList = getRandomWords(words(), 25);
+        tiles = wordList.map((word) => Tile.fromWord(word)).toList();
+
+        players = [
+          new Player('red', Colors.red[100], Colors.red, 9),
+          new Player('blue', Colors.blue[100], Colors.blue, 8),
+        ];
+
+        // TODO: DELETE
+        players[0].setScore(3);
+        tiles[0].setOwner(players[0]);
+        tiles[1].setOwner(players[0]);
+        tiles[5].setOwner(players[1]);
+        tiles[6].setOwner(players[1]);
+        tiles[1].select();
+        tiles[6].select();
+      });
+    }
+
+    resetGame();
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +100,7 @@ class _GamePageState extends State<GamePage> {
           width: double.infinity,
           child: RaisedButton(
             onPressed: () {
-              // Reset game
+              resetGame();
             },
             child: const Text('New Game'),
           ),
