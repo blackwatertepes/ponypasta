@@ -23,10 +23,23 @@ void main() {
 
     expect(find.text('End Turn (Hide Codes)'), findsOneWidget);
 
+    // End code viewers turn...
+    await tester.tap(find.byIcon(Icons.check));
+    await tester.pump();
+
+    expect(find.text('End Turn (Hide Codes)'), findsNothing);
+
     // Start a new game...
     await tester.tap(find.text("New Game"));
     await tester.pump();
 
+    expect(find.text('Start a new Game'), findsOneWidget);
+
+    // Confirm...
+    await tester.tap(find.text("New Game").last);
+    await tester.pump();
+
+    expect(find.text('Start a new Game'), findsNothing);
     expect(find.text('End Turn (Hide Codes)'), findsOneWidget);
   });
 }
