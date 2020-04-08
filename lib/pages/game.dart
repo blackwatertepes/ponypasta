@@ -25,6 +25,39 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
 
+  Future<void> _neverSatisfied(resetGame) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Start a new Game'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('You will never be satisfied.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('New Game'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                resetGame();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -145,7 +178,7 @@ class _GamePageState extends State<GamePage> {
         SizedBox(
           width: double.infinity,
           child: RaisedButton(
-            onPressed: () { resetGame(); },
+            onPressed: () { _neverSatisfied(resetGame); },
             child: const Text('New Game'),
           ),
         ),
