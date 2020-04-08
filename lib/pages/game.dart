@@ -11,7 +11,7 @@ class GamePage extends StatefulWidget {
 
   final String title;
   final Player bomb = Player('bomb', Colors.grey, Colors.grey, 1);
-  final Set<String> turnStates = Set.from(['code_viewing', 'guessing']);
+  final List<String> turnStates = ['code_viewing', 'guessing'];
 
   List<Tile> tiles = List();
   List<Player> players = List();
@@ -55,27 +55,37 @@ class _GamePageState extends State<GamePage> {
       resetGame();
     }
 
-    String endTurnLabel() {
-      if (widget.currentTurnState == 'code_viewing') {
-        return "End Turn (Hide Codes)";
-      } else if (widget.currentTurnState == 'guessing') {
-        return "Begin Turn (View Codes)";//" 4 ${nextPlayer.name})";
+    Player nextPlayer() {
+      for (var i = 0; i < widget.players.length - 1; i++) {
+        if (widget.players[i] == widget.currentPlayer) {
+          return widget.players[i + 1];
+        }
       }
+      return widget.players.first;
+    }
+
+    String nextAction() {
+      for (var i = 0; i < widget.turnStates.length - 1; i++) {
+        if (widget.turnStates[i] == widget.currentTurnState) {
+          return widget.turnStates[i + 1];
+        }
+      }
+      return widget.turnStates.first;
+    }
+
+    String endTurnLabel() {
+      if (widget.currentTurnState == 'guessing') {
+        return "Begin Turn (View Codes 4 ${nextPlayer().name})";
+      }
+      return "End Turn (Hide Codes)";
     }
 
     void endTurn() {
-      // TODO: Clean up with lists, and next interations
       setState(() {
         if (widget.currentTurnState == 'code_viewing') {
-          widget.currentTurnState = 'guessing';
-          if (widget.currentPlayer == widget.players[0]) {
-            widget.currentPlayer = widget.players[1];
-          } else {
-            widget.currentPlayer = widget.players[0];
-          }
-        } else if (widget.currentTurnState == 'guessing') {
-          widget.currentTurnState = 'code_viewing';
+          widget.currentPlayer = nextPlayer();
         }
+        widget.currentTurnState = nextAction();
       });
     }
 
