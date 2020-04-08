@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../data/words.dart';
@@ -40,15 +41,16 @@ class _GamePageState extends State<GamePage> {
 
         bomb = Player('bomb', Colors.grey, Colors.grey, 1);
 
-        // TODO: DELETE
-        players[0].setScore(3);
-        tiles[0].setOwner(players[0]);
-        tiles[1].setOwner(players[0]);
-        tiles[5].setOwner(players[1]);
-        tiles[6].setOwner(players[1]);
-        tiles[1].select();
-        tiles[6].select();
-        tiles[24].setOwner(bomb);
+        List<Player> entities = players.toList();
+        entities.add(bomb);
+        entities.forEach((player) {
+          while (tiles.where((tile) => tile.owner == player).length < player.tileCount) {
+            List<Tile> unassignedTiles = tiles.where((tile) => !tile.hasOwner()).toList();
+            int n = Random().nextInt(unassignedTiles.length);
+            Tile tile = unassignedTiles[n];
+            tile.owner = player;
+          }
+        });
       });
     }
 
