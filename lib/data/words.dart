@@ -10,7 +10,7 @@ List<String> words() {
   return words;
 }
 
-String getRandomWord(List<String> list) {
+String _getRandomWord(List<String> list) {
   final random = new Random();
   var i = random.nextInt(list.length);
   return list[i];
@@ -20,7 +20,7 @@ List getRandomWords(List<String> list, int amount) {
   List<String> newList = new List();
 
   while (newList.length < amount) {
-    String word = getRandomWord(words());
+    String word = _getRandomWord(list);
     if (newList.contains(word) == false) {
       newList.add(word);
     }
