@@ -6,29 +6,42 @@ import '../../lib/models/player.dart';
 void main() {
   group('Player', () {
     Player player;
+    int tileCount = 9;
 
     setUp(() {
-      player = new Player('red', Colors.red[100], Colors.red, 9);
+      player = new Player('red', Colors.red[100], Colors.red, tileCount);
     });
 
-    test('increments the score from 0', () {
+    test('init', () {
       expect(player.score, 0);
-      player.incScore();
-      expect(player.score, 1);
-    });
-
-    test('shows a winner', () {
       expect(player.hasWon(), false);
-      while (player.score < player.tileCount) {
-        player.incScore();
-      }
-      expect(player.hasWon(), true);
+      expect(player.pips().where((pip) => pip).length, 0);
     });
 
-    test('shows the proper amount of pips', () {
-      expect(player.pips().where((pip) => pip).length, 0);
-      player.incScore();
-      expect(player.pips().where((pip) => pip == true).length, 1);
+    group('when the score increments', () {
+      setUp(() {
+        player.incScore();
+      });
+
+      test('shows the score & pips correctly', () {
+        expect(player.score, 1);
+        expect(player.pips().where((pip) => pip).length, 1);
+        expect(player.hasWon(), false);
+      });
+    });
+
+    group('when the score increments to a victory', () {
+      setUp(() {
+        while (player.score < player.tileCount) {
+          player.incScore();
+        }
+      });
+
+      test('shows a winner', () {
+        expect(player.score, tileCount);
+        expect(player.pips().where((pip) => pip).length, tileCount);
+        expect(player.hasWon(), true);
+      });
     });
   });
 }
