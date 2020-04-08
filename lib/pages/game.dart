@@ -10,11 +10,11 @@ class GamePage extends StatefulWidget {
   GamePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  final Player bomb = Player('bomb', Colors.grey, Colors.grey, 1);
   final List<String> turnStates = ['code_viewing', 'guessing'];
 
   List<Tile> tiles = List();
   List<Player> players = List();
+  List<Player> bombs = List();
   String currentTurnState;
   Player currentPlayer;
   bool canGuess = false;
@@ -65,24 +65,29 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
 
+    void addTilesForPlayer(player) {
+      while (widget.tiles.where((tile) => tile.owner == player).length < player.tileCount) {
+        List<Tile> unassignedTiles = widget.tiles.where((tile) => !tile.hasOwner()).toList();
+        int n = Random().nextInt(unassignedTiles.length);
+        Tile tile = unassignedTiles[n];
+        tile.owner = player;
+      }
+    }
+
     void resetGame() {
       setState(() {
         widget.tiles = getRandomWords(words(), 25).map((word) => Tile.fromWord(word)).toList();
         widget.players = [
-          new Player('red', Colors.red[100], Colors.red, 9),
-          new Player('blue', Colors.blue[100], Colors.blue, 8),
+          new Player('red', Colors.red[100], Colors.red, 7), // 9 for normal
+          new Player('blue', Colors.blue[100], Colors.blue, 6), // 8 for normal
+        ];
+        widget.bombs = [ // 1 bomb for normal game play
+          new Player('bomb', Colors.grey, Colors.grey, 1),
+          new Player('bomb', Colors.grey, Colors.grey, 1),
         ];
 
-        List<Player> entities = widget.players.toList();
-        entities.add(widget.bomb);
-        entities.forEach((player) {
-          while (widget.tiles.where((tile) => tile.owner == player).length < player.tileCount) {
-            List<Tile> unassignedTiles = widget.tiles.where((tile) => !tile.hasOwner()).toList();
-            int n = Random().nextInt(unassignedTiles.length);
-            Tile tile = unassignedTiles[n];
-            tile.owner = player;
-          }
-        });
+        widget.players.forEach((player) => addTilesForPlayer(player));
+        widget.bombs.forEach((player) => addTilesForPlayer(player));
 
         widget.currentTurnState = widget.turnStates.first;
         widget.currentPlayer = widget.players.first;
@@ -230,7 +235,7 @@ class _GamePageState extends State<GamePage> {
     }
 
     bool canViewTile(Player owner) {
-      return widget.currentPlayer == owner || owner.name == 'bomb';
+      return widget.currentPlayer == owner;// || owner.name == 'bomb'; // coop can't see bombs
     }
 
     // DUP
