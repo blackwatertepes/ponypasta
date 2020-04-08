@@ -21,6 +21,7 @@ class _GamePageState extends State<GamePage> {
     List<String> wordList;
     List<Tile> tiles;
     List<Player> players;
+    Player bomb;
 
     // enum TurnState {
     //   codeviewing,
@@ -37,6 +38,8 @@ class _GamePageState extends State<GamePage> {
           new Player('blue', Colors.blue[100], Colors.blue, 8),
         ];
 
+        bomb = Player('bomb', Colors.grey, Colors.grey, 1);
+
         // TODO: DELETE
         players[0].setScore(3);
         tiles[0].setOwner(players[0]);
@@ -45,6 +48,7 @@ class _GamePageState extends State<GamePage> {
         tiles[6].setOwner(players[1]);
         tiles[1].select();
         tiles[6].select();
+        tiles[24].setOwner(bomb);
       });
     }
 
