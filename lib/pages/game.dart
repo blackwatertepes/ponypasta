@@ -73,8 +73,12 @@ class _GamePageState extends State<GamePage> {
       return widget.turnStates.first;
     }
 
+    bool isCodeViewing() {
+      return widget.currentTurnState == 'code_viewing';
+    }
+
     String endTurnLabel() {
-      if (widget.currentTurnState == 'guessing') {
+      if (!isCodeViewing()) {
         return "Begin Turn (View Codes 4 ${nextPlayer().name})";
       }
       return "End Turn (Hide Codes)";
@@ -82,10 +86,10 @@ class _GamePageState extends State<GamePage> {
 
     void endTurn() {
       setState(() {
-        if (widget.currentTurnState == 'code_viewing') {
+        widget.currentTurnState = nextAction();
+        if (isCodeViewing()) {
           widget.currentPlayer = nextPlayer();
         }
-        widget.currentTurnState = nextAction();
       });
     }
 
@@ -111,7 +115,7 @@ class _GamePageState extends State<GamePage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
-                colors: [widget.players[0].baseColor, widget.players[0].fillColor], // TODO
+                colors: [widget.currentPlayer.baseColor, widget.currentPlayer.fillColor], // TODO
               )
             ),
             child: GridView.count(
@@ -163,10 +167,25 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget _buildTile(BuildContext context, Tile tile) {
+    bool canViewTile(Player owner) {
+      return widget.currentPlayer == owner || owner.name == 'bomb';
+    }
+
+    bool isCodeViewing() {
+      return widget.currentTurnState == 'code_viewing';
+    }
+
+    Color tileColor(Tile tile) {
+      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
+        return tile.owner.baseColor;
+      }
+      return Colors.grey[300];
+    }
+
     return Container(
       padding: const EdgeInsets.all(0),
       child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.isSelected() ? TextDecoration.lineThrough : TextDecoration.none))),
-      color: tile.hasOwner() ? tile.owner.baseColor : Colors.grey[300],
+      color: tileColor(tile),
     );
   }
 }
