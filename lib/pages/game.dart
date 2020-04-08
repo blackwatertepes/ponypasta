@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../data/words.dart';
+import '../models/player.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title}) : super(key: key);
@@ -13,12 +14,23 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-  List<bool> redPips = List.from([true, true, true, false, false, false, false, false, false]);
-  List<bool> bluePips = List.from([false, false, false, false, false, false, false, false, false]);
 
   @override
   Widget build(BuildContext context) {
     List<String> wordList = getRandomWords(words(), 25);
+
+    List<Player> players = [
+      new Player('red', Colors.red[200], Colors.red, 9),
+      new Player('blue', Colors.blue[200], Colors.blue, 8),
+    ];
+
+    // TODO: DELETE
+    players[0].setScore(3);
+
+    // const playerActions: Action[] = [
+    //   { future: 'VIEW CODES', present: 'VIEWING CODES' },
+    //   { future: 'HIDE CODES', present: 'GUESSING CODES' }
+    // ];
 
     return Scaffold(
       appBar: AppBar(
@@ -28,25 +40,14 @@ class _GamePageState extends State<GamePage> {
             icon: const Icon(Icons.check),
             tooltip: 'End Turn',
             onPressed: () {
-              // openPage(context);
+              // end turn
             },
           ),
         ],
       ),
       body: Column(children: <Widget>[
         Row(
-          children: <Widget>[
-            Expanded(
-              child: Row(
-                children: redPips.map((filled) => _buildPlayerPip(context, Colors.red, Colors.red[100], filled)).toList(),
-              ),
-            ),
-            Expanded(
-              child: Row(
-                children: bluePips.map((filled) => _buildPlayerPip(context, Colors.blue, Colors.blue[200], filled)).toList(),
-              ),
-            ),
-          ],
+          children: players.map((player) => _buildPlayerPips(context, player)).toList()
         ),
         Expanded(
           child: GridView.count(
@@ -62,7 +63,9 @@ class _GamePageState extends State<GamePage> {
         SizedBox(
           width: double.infinity,
           child: RaisedButton(
-            onPressed: () {},
+            onPressed: () {
+              // End turn
+            },
             child: const Text('End Turn'),
             color: Colors.red[200],
           ),
@@ -71,11 +74,21 @@ class _GamePageState extends State<GamePage> {
         SizedBox(
           width: double.infinity,
           child: RaisedButton(
-            onPressed: () {},
+            onPressed: () {
+              // Reset game
+            },
             child: const Text('New Game'),
           ),
         ),
       ]),
+    );
+  }
+
+  Widget _buildPlayerPips(BuildContext context, Player player) {
+    return Expanded(
+      child: Row(
+        children: player.pips().map((filled) => _buildPlayerPip(context, player.getFillColor(), player.getBaseColor(), filled)).toList(),
+      ),
     );
   }
 
