@@ -250,7 +250,7 @@ class _GamePageState extends State<GamePage> {
         setState(() {
           tile.select();
           widget.canGuess = false;
-          if (tile.owner.name == "bomb") {
+          if (tile.hasOwner() && tile.owner.name == "bomb") {
             _gameOver("You've bown up!");
           }
           if (tile.hasOwner() && tile.owner == widget.currentPlayer) {

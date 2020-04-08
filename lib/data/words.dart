@@ -22,7 +22,7 @@ List getRandomWords(List<String> list, int amount) {
   while (newList.length < amount) {
     String word = getRandomWord(words());
     if (newList.contains(word) == false) {
-      newList.add(getRandomWord(words()));
+      newList.add(word);
     }
   }
 
