@@ -96,6 +96,8 @@ class _GamePageState extends State<GamePage> {
       });
     }
 
+    // TODO: Add win/lost screens
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -154,7 +156,7 @@ class _GamePageState extends State<GamePage> {
   Widget _buildPlayerPips(BuildContext context, Player player) {
     return Expanded(
       child: Row(
-        children: player.pips().map((filled) => _buildPlayerPip(context, player.getFillColor(), player.getBaseColor(), filled)).toList(),
+        children: player.pips().map((filled) => _buildPlayerPip(context, player.fillColor, player.baseColor, filled)).toList(),
       ),
     );
   }
@@ -180,7 +182,7 @@ class _GamePageState extends State<GamePage> {
     }
 
     Color tileColor() {
-      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.isSelected())) {
+      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
         return tile.owner.baseColor;
       }
       return Colors.grey[300];
@@ -200,7 +202,7 @@ class _GamePageState extends State<GamePage> {
 
     return FlatButton(
       padding: const EdgeInsets.all(0),
-      child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.isSelected() ? TextDecoration.lineThrough : TextDecoration.none))),
+      child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.selected ? TextDecoration.lineThrough : TextDecoration.none))),
       color: tileColor(),
       onPressed: () { clickTile(); }
     );

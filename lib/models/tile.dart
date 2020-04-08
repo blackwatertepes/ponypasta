@@ -16,26 +16,13 @@ class Tile {
 
   void select() {
     this.selected = true;
-  }
-
-  void setOwner(dynamic owner) {
-    this.owner = owner;
+    if (this.hasOwner()) {
+      owner.incScore();
+    }
   }
 
   bool hasOwner() {
     return this.owner != null;
-  }
-
-  String getName() {
-    return this.name;
-  }
-
-  Player getOwner() {
-    return this.owner;
-  }
-
-  bool isSelected() {
-    return this.selected;
   }
 
   Tile.fromMap(Map<String, dynamic> map)//, {this.reference})

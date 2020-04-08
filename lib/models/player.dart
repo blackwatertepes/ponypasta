@@ -15,24 +15,8 @@ class Player {
     this.tileCount = tileCount;
   }
 
-  void setScore(int score) {
-    this.score = score;
-  }
-
-  Color getBaseColor() {
-    return this.baseColor;
-  }
-
-  Color getFillColor() {
-    return this.fillColor;
-  }
-
-  int getTileCount() {
-    return this.tileCount;
-  }
-
-  int getScore() {
-    return score;
+  void incScore() {
+    this.score++;
   }
 
   List<bool> pips() {
