@@ -26,6 +26,10 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
 
   Future<void> _neverSatisfied(resetGame) async {
+    String body() {
+      return 'You will never be satisfied.';
+    }
+
     return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -34,7 +38,7 @@ class _GamePageState extends State<GamePage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('You will never be satisfied.'),
+                Text(body()),
               ],
             ),
           ),
@@ -205,6 +209,26 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget _buildTile(BuildContext context, Tile tile) {
+
+    Future<void> _gameOver(String title) async {
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Next'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     bool canViewTile(Player owner) {
       return widget.currentPlayer == owner || owner.name == 'bomb';
     }
@@ -226,8 +250,14 @@ class _GamePageState extends State<GamePage> {
         setState(() {
           tile.select();
           widget.canGuess = false;
+          if (tile.owner.name == "bomb") {
+            _gameOver("You've bown up!");
+          }
           if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
             widget.canGuess = true;
+            if (tile.owner.hasWon()) {
+              _gameOver("${tile.owner.name} has won!!!");
+            }
           }
         });
       }

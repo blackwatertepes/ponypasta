@@ -19,6 +19,10 @@ class Player {
     this.score++;
   }
 
+  bool hasWon() {
+    return this.score == this.tileCount;
+  }
+
   List<bool> pips() {
     List<bool> list = new List();
     for (var i = 0; i < this.tileCount; i++) {
