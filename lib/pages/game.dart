@@ -17,6 +17,7 @@ class GamePage extends StatefulWidget {
   List<Player> players = List();
   String currentTurnState;
   Player currentPlayer;
+  bool canGuess = false;
 
   @override
   _GamePageState createState() => _GamePageState();
@@ -89,6 +90,8 @@ class _GamePageState extends State<GamePage> {
         widget.currentTurnState = nextAction();
         if (isCodeViewing()) {
           widget.currentPlayer = nextPlayer();
+        } else {
+          widget.canGuess = true;
         }
       });
     }
@@ -171,21 +174,35 @@ class _GamePageState extends State<GamePage> {
       return widget.currentPlayer == owner || owner.name == 'bomb';
     }
 
+    // DUP
     bool isCodeViewing() {
       return widget.currentTurnState == 'code_viewing';
     }
 
-    Color tileColor(Tile tile) {
-      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
+    Color tileColor() {
+      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.isSelected())) {
         return tile.owner.baseColor;
       }
       return Colors.grey[300];
     }
 
-    return Container(
+    void clickTile() {
+      if (widget.canGuess) {
+        setState(() {
+          tile.select();
+          widget.canGuess = false;
+          if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
+            widget.canGuess = true;
+          }
+        });
+      }
+    }
+
+    return FlatButton(
       padding: const EdgeInsets.all(0),
       child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.isSelected() ? TextDecoration.lineThrough : TextDecoration.none))),
-      color: tileColor(tile),
+      color: tileColor(),
+      onPressed: () { clickTile(); }
     );
   }
 }
