@@ -32,6 +32,8 @@ class _GamePageState extends State<GamePage> {
     tiles[1].setOwner(players[0]);
     tiles[5].setOwner(players[1]);
     tiles[6].setOwner(players[1]);
+    tiles[1].select();
+    tiles[6].select();
 
     // enum TurnState {
     //   codeviewing,
@@ -118,7 +120,7 @@ class _GamePageState extends State<GamePage> {
   Widget _buildTile(BuildContext context, Tile tile) {
     return Container(
       padding: const EdgeInsets.all(0),
-      child: Center(child: Text(tile.name)),
+      child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.isSelected() ? TextDecoration.lineThrough : TextDecoration.none))),
       color: tile.hasOwner() ? tile.owner.baseColor : Colors.grey[300],
     );
   }

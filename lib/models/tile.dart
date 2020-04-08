@@ -5,8 +5,8 @@ import './Player.dart';
 
 class Tile {
   String name;
-  dynamic owner;
-  bool selected;
+  dynamic owner = null;
+  bool selected = false;
 
   Tile(String name, {Player owner= null, bool selected= false}) {
     this.name = name;
@@ -34,7 +34,7 @@ class Tile {
     return this.owner;
   }
 
-  bool getSelected() {
+  bool isSelected() {
     return this.selected;
   }
 
