@@ -52,7 +52,7 @@ class Player {
        assert(map['baseColor'] != null),
        assert(map['fillColor'] != null),
        assert(map['tileCount'] != null),
-       name = map['ante'],
+       name = map['name'],
        baseColor = map['baseColor'],
        fillColor = map['fillColor'],
        tileCount = map['tileCount'];

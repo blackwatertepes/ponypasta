@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../data/words.dart';
 import '../models/player.dart';
+import '../models/tile.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title}) : super(key: key);
@@ -18,19 +19,24 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     List<String> wordList = getRandomWords(words(), 25);
+    List<Tile> tiles = wordList.map((word) => Tile.fromWord(word)).toList();
 
     List<Player> players = [
-      new Player('red', Colors.red[200], Colors.red, 9),
-      new Player('blue', Colors.blue[200], Colors.blue, 8),
+      new Player('red', Colors.red[100], Colors.red, 9),
+      new Player('blue', Colors.blue[100], Colors.blue, 8),
     ];
 
     // TODO: DELETE
     players[0].setScore(3);
+    tiles[0].setOwner(players[0]);
+    tiles[1].setOwner(players[0]);
+    tiles[5].setOwner(players[1]);
+    tiles[6].setOwner(players[1]);
 
-    // const playerActions: Action[] = [
-    //   { future: 'VIEW CODES', present: 'VIEWING CODES' },
-    //   { future: 'HIDE CODES', present: 'GUESSING CODES' }
-    // ];
+    // enum TurnState {
+    //   codeviewing,
+    //   guessing,
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -50,14 +56,22 @@ class _GamePageState extends State<GamePage> {
           children: players.map((player) => _buildPlayerPips(context, player)).toList()
         ),
         Expanded(
-          child: GridView.count(
-            primary: false,
-            padding: const EdgeInsets.all(0),
-            crossAxisSpacing: 3,
-            mainAxisSpacing: 3,
-            crossAxisCount: 5,
-            children:
-                wordList.map((word) => _buildTile(context, word)).toList(),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                colors: [players[0].baseColor, players[0].fillColor], // TODO
+              )
+            ),
+            child: GridView.count(
+              primary: false,
+              padding: const EdgeInsets.all(0),
+              crossAxisSpacing: 3,
+              mainAxisSpacing: 3,
+              crossAxisCount: 5,
+              children:
+                tiles.map((tile) => _buildTile(context, tile)).toList(),
+            ),
           ),
         ),
         SizedBox(
@@ -67,7 +81,6 @@ class _GamePageState extends State<GamePage> {
               // End turn
             },
             child: const Text('End Turn'),
-            color: Colors.red[200],
           ),
         ),
         Divider(),
@@ -102,11 +115,11 @@ class _GamePageState extends State<GamePage> {
     );
   }
 
-  Widget _buildTile(BuildContext context, String word) {
+  Widget _buildTile(BuildContext context, Tile tile) {
     return Container(
       padding: const EdgeInsets.all(0),
-      child: Center(child: Text(word)),
-      color: Colors.grey[300],
+      child: Center(child: Text(tile.name)),
+      color: tile.hasOwner() ? tile.owner.baseColor : Colors.grey[300],
     );
   }
 }
