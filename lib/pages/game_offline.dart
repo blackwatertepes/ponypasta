@@ -6,8 +6,8 @@ import '../data/words.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
 
-class GamePage extends StatefulWidget {
-  GamePage({Key key, this.title}) : super(key: key);
+class GameOfflinePage extends StatefulWidget {
+  GameOfflinePage({Key key, this.title}) : super(key: key);
 
   final String title;
   final List<String> turnStates = ['code_viewing', 'guessing'];
@@ -23,7 +23,7 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GameOfflinePage> {
 
   Future<void> _neverSatisfied(resetGame) async {
     String body() {
@@ -137,8 +137,6 @@ class _GamePageState extends State<GamePage> {
         }
       });
     }
-
-    // TODO: Add win/lost screens
 
     return Scaffold(
       appBar: AppBar(
