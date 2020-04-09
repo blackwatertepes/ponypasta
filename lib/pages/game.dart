@@ -176,17 +176,17 @@ class _GamePageState extends State<GamePage> {
             ),
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: RaisedButton(
+        FractionallySizedBox(
+          widthFactor: 0.9,
+          child: OutlineButton(
             onPressed: () { endTurn(); },
             child: Text(endTurnLabel()),
           ),
         ),
         Divider(),
-        SizedBox(
-          width: double.infinity,
-          child: RaisedButton(
+        FractionallySizedBox(
+          widthFactor: 0.9,
+          child: OutlineButton(
             onPressed: () { _neverSatisfied(resetGame); },
             child: const Text('New Game'),
           ),
