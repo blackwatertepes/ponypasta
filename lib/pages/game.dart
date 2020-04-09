@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../data/words.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
+import '../components/tile.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title}) : super(key: key);
@@ -214,7 +215,6 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget _buildTile(BuildContext context, Tile tile) {
-
     Future<void> _gameOver(String title) async {
       return showDialog<void>(
         context: context,
@@ -232,22 +232,6 @@ class _GamePageState extends State<GamePage> {
           );
         },
       );
-    }
-
-    bool canViewTile(Player owner) {
-      return widget.currentPlayer == owner;// || owner.name == 'bomb'; // coop can't see bombs
-    }
-
-    // DUP
-    bool isCodeViewing() {
-      return widget.currentTurnState == 'code_viewing';
-    }
-
-    Color tileColor() {
-      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
-        return tile.owner.baseColor;
-      }
-      return Colors.grey[300];
     }
 
     void clickTile() {
@@ -268,11 +252,11 @@ class _GamePageState extends State<GamePage> {
       }
     }
 
-    return FlatButton(
-      padding: const EdgeInsets.all(0),
-      child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.selected ? TextDecoration.lineThrough : TextDecoration.none))),
-      color: tileColor(),
-      onPressed: () { clickTile(); }
+    return TileWidget(
+      tile: tile,
+      currentPlayer: widget.currentPlayer,
+      currentTurnState: widget.currentTurnState,
+      onClick: clickTile,
     );
   }
 }
