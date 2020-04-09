@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './pages/game.dart';
+import './pages/menu.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: GamePage(title: 'Pony Pasta'),
+      home: MenuPage(title: 'Pony Pasta'),
     );
   }
 }
