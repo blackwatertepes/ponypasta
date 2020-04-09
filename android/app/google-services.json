@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1075489014656",
+    "firebase_url": "https://codefriendsflutter.firebaseio.com",
+    "project_id": "codefriendsflutter",
+    "storage_bucket": "codefriendsflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075489014656:android:d7b35721f72ffe60b83765",
+        "android_client_info": {
+          "package_name": "com.example.codefriendsflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075489014656-005garnv8s29rf1c889mjuelsuj8qpca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7HTRLtO24bEW6HIlE0yfA7Bh1HmlKyUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075489014656-005garnv8s29rf1c889mjuelsuj8qpca.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
