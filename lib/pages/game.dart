@@ -250,6 +250,13 @@ class _GamePageState extends State<GamePage> {
       return Colors.grey[300];
     }
 
+    Color iconColor() {
+      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
+        return tile.owner.fillColor;
+      }
+      return Colors.grey[300];
+    }
+
     void clickTile() {
       if (widget.canGuess) {
         setState(() {
@@ -270,7 +277,11 @@ class _GamePageState extends State<GamePage> {
 
     return FlatButton(
       padding: const EdgeInsets.all(0),
-      child: Center(child: Text(tile.name, style: new TextStyle(decoration: tile.selected ? TextDecoration.lineThrough : TextDecoration.none))),
+      child: Center(
+        child: !tile.selected ?
+          Text(tile.name) :
+          Icon(Icons.check_circle, color: iconColor()),
+      ),
       color: tileColor(),
       onPressed: () { clickTile(); }
     );
