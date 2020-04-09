@@ -36,6 +36,14 @@ class Tile {
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);
 
+  Map toMap() {
+    Map toReturn = new Map();
+    toReturn['name'] = name;
+    toReturn['owner'] = owner?.toMap();
+    toReturn['selected'] = selected;
+    return toReturn;
+  }
+
   Tile.fromWord(String word) {
     name = word;
   }

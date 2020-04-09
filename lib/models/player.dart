@@ -48,6 +48,14 @@ class Player {
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);
 
+  Map toMap() {
+    Map toReturn = new Map();
+    toReturn['name'] = name;
+    toReturn['tileCount'] = tileCount;
+    toReturn['score'] = score;
+    return toReturn;
+  }
+
   @override
   String toString() => "Player<$name>";
 }
