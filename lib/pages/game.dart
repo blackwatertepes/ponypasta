@@ -9,6 +9,7 @@ import '../models/game.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/Board.dart';
+import '../components/Pips.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -177,9 +178,7 @@ class _GamePageState extends State<GamePage> {
         ],
       ),
       body: Column(children: <Widget>[
-        Row(
-          children: widget.game.players.map((player) => _buildPlayerPips(context, player)).toList()
-        ),
+        Pips(players: widget.game.players),
         Board(
           currentPlayer: widget.game.currentPlayer,
           isCodeViewing: isCodeViewing(),
@@ -210,24 +209,6 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ]),
-    );
-  }
-
-  Widget _buildPlayerPips(BuildContext context, Player player) {
-    return Expanded(
-      child: Row(
-        children: player.pips().map((filled) => _buildPlayerPip(context, player.fillColor, player.baseColor, filled)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildPlayerPip(BuildContext context, Color fillColor, Color baseColor, bool filled) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(2.0),
-        height: 10,
-        color: filled ? fillColor : baseColor
-      )
     );
   }
 

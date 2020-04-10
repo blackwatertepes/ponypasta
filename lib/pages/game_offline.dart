@@ -6,6 +6,7 @@ import '../data/words.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/board.dart';
+import '../components/pips.dart';
 
 class GameOfflinePage extends StatefulWidget {
   GameOfflinePage({Key key, this.title}) : super(key: key);
@@ -172,9 +173,7 @@ class _GamePageState extends State<GameOfflinePage> {
         ],
       ),
       body: Column(children: <Widget>[
-        Row(
-          children: widget.players.map((player) => _buildPlayerPips(context, player)).toList()
-        ),
+        Pips(players: widget.players),
         Board(
           currentPlayer: widget.currentPlayer,
           isCodeViewing: isCodeViewing(),
@@ -213,24 +212,6 @@ class _GamePageState extends State<GameOfflinePage> {
           ),
         ),
       ]),
-    );
-  }
-
-  Widget _buildPlayerPips(BuildContext context, Player player) {
-    return Expanded(
-      child: Row(
-        children: player.pips().map((filled) => _buildPlayerPip(context, player.fillColor, player.baseColor, filled)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildPlayerPip(BuildContext context, Color fillColor, Color baseColor, bool filled) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(2.0),
-        height: 10,
-        color: filled ? fillColor : baseColor
-      )
     );
   }
 }
