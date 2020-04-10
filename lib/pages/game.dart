@@ -10,6 +10,7 @@ import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
+import '../components/dialogs/game_over.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -83,36 +84,6 @@ class _GamePageState extends State<GamePage> {
       //   _error = error;
       // });
     });
-  }
-
-  Future<void> _neverSatisfied(resetGame) async {
-    String body() {
-      return 'You will never be satisfied.';
-    }
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Start a new Game'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(body()),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -189,12 +160,12 @@ class _GamePageState extends State<GamePage> {
                 tile.select();
                 widget.game.canGuess = false;
                 if (tile.hasOwner() && tile.owner.name == "bomb") {
-                  _gameOver("You've bown up!");
+                  gameOver(context, "You've bown up!");
                 }
                 if (tile.hasOwner() && tile.owner == widget.game.currentPlayer) {
                   widget.game.canGuess = true;
                   if (tile.owner.hasWon()) {
-                    _gameOver("${tile.owner.name} has won!!!");
+                    gameOver(context, "${tile.owner.name} has won!!!");
                   }
                 }
               });
@@ -209,25 +180,6 @@ class _GamePageState extends State<GamePage> {
           ),
         ),
       ]),
-    );
-  }
-
-  Future<void> _gameOver(String title) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Next'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }

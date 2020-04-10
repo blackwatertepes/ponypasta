@@ -11,6 +11,8 @@ import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/board.dart';
 import '../components/pips.dart';
+import '../components/dialogs/game_over.dart';
+import '../components/dialogs/new_game.dart';
 
 class GameOnlinePage extends StatefulWidget {
   GameOnlinePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -125,43 +127,6 @@ class _GamePageState extends State<GameOnlinePage> {
     }
   }
 
-  Future<void> _neverSatisfied(resetGame) async {
-    String body() {
-      return 'You will never be satisfied.';
-    }
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Start a new Game'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(body()),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('New Game'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                resetGame();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
 
@@ -263,12 +228,12 @@ class _GamePageState extends State<GameOnlinePage> {
                 tile.select();
                 widget.canGuess = false;
                 if (tile.hasOwner() && tile.owner.name == "bomb") {
-                  _gameOver("You've bown up!");
+                  gameOver(context, "You've bown up!");
                 }
                 if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
                   widget.canGuess = true;
                   if (tile.owner.hasWon()) {
-                    _gameOver("${tile.owner.name} has won!!!");
+                    gameOver(context, "${tile.owner.name} has won!!!");
                   }
                 }
               });
@@ -286,30 +251,11 @@ class _GamePageState extends State<GameOnlinePage> {
         FractionallySizedBox(
           widthFactor: 0.9,
           child: OutlineButton(
-            onPressed: () { _neverSatisfied(resetGame); },
+            onPressed: () { neverSatisfied(context, resetGame); },
             child: const Text('New Game'),
           ),
         ),
       ]),
-    );
-  }
-
-  Future<void> _gameOver(String title) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Next'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
