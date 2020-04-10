@@ -9,6 +9,7 @@ import '../data/words.dart';
 import '../models/game.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
+import '../components/board.dart';
 
 class GameOnlinePage extends StatefulWidget {
   GameOnlinePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -253,24 +254,27 @@ class _GamePageState extends State<GameOnlinePage> {
         Row(
           children: widget.players.map((player) => _buildPlayerPips(context, player)).toList()
         ),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                colors: [widget.currentPlayer.baseColor, widget.currentPlayer.fillColor], // TODO
-              )
-            ),
-            child: GridView.count(
-              primary: false,
-              padding: const EdgeInsets.all(0),
-              crossAxisSpacing: 3,
-              mainAxisSpacing: 3,
-              crossAxisCount: 5,
-              children:
-                widget.tiles.map((tile) => _buildTile(context, tile)).toList(),
-            ),
-          ),
+        Board(
+          currentPlayer: widget.currentPlayer,
+          isCodeViewing: isCodeViewing(),
+          tiles: widget.tiles,
+          onClickTile: (Tile tile) {
+            if (widget.canGuess) {
+              setState(() {
+                tile.select();
+                widget.canGuess = false;
+                if (tile.hasOwner() && tile.owner.name == "bomb") {
+                  _gameOver("You've bown up!");
+                }
+                if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
+                  widget.canGuess = true;
+                  if (tile.owner.hasWon()) {
+                    _gameOver("${tile.owner.name} has won!!!");
+                  }
+                }
+              });
+            }
+          }
         ),
         FractionallySizedBox(
           widthFactor: 0.9,
@@ -309,77 +313,22 @@ class _GamePageState extends State<GameOnlinePage> {
     );
   }
 
-  Widget _buildTile(BuildContext context, Tile tile) {
-
-    Future<void> _gameOver(String title) async {
-      return showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Next'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    bool canViewTile(Player owner) {
-      return widget.currentPlayer == owner;// || owner.name == 'bomb'; // coop can't see bombs
-    }
-
-    // DUP
-    bool isCodeViewing() {
-      return widget.currentTurnState == 'code_viewing';
-    }
-
-    Color tileColor() {
-      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
-        return tile.owner.baseColor;
-      }
-      return Colors.grey[300];
-    }
-
-    Color iconColor() {
-      if (tile.hasOwner() && ((isCodeViewing() && canViewTile(tile.owner)) || tile.selected)) {
-        return tile.owner.fillColor;
-      }
-      return Colors.grey[300];
-    }
-
-    void clickTile() {
-      if (widget.canGuess) {
-        setState(() {
-          tile.select();
-          widget.canGuess = false;
-          if (tile.hasOwner() && tile.owner.name == "bomb") {
-            _gameOver("You've bown up!");
-          }
-          if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
-            widget.canGuess = true;
-            if (tile.owner.hasWon()) {
-              _gameOver("${tile.owner.name} has won!!!");
-            }
-          }
-        });
-      }
-    }
-
-    return FlatButton(
-      padding: const EdgeInsets.all(0),
-      child: Center(
-        child: !tile.selected ?
-          Text(tile.name) :
-          Icon(Icons.check_circle, color: iconColor()),
-      ),
-      color: tileColor(),
-      onPressed: () { clickTile(); }
+  Future<void> _gameOver(String title) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Next'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
