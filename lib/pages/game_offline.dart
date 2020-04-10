@@ -28,12 +28,20 @@ class GameOfflinePage extends StatefulWidget {
 class _GamePageState extends State<GameOfflinePage> {
 
   @override
+  void initState() {
+    super.initState();
+
+    newGame(widget);
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     if (widget.currentPlayer == null) {
-      setState(() {
-        newGame(widget);
-      });
+      return Scaffold(
+        appBar: AppBar(title: Center(child: Text("Loading..."))),
+        body: Center(child: Text("Loading..."))
+      );
     }
 
     return Scaffold(

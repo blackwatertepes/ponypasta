@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import '../data/words.dart';
 import '../models/game.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
@@ -12,7 +11,6 @@ import '../components/pips.dart';
 import '../components/dialogs/game_over.dart';
 import '../components/dialogs/new_game.dart';
 import '../utils/game.dart';
-import '../utils/utils.dart';
 
 class GameOnlinePage extends StatefulWidget {
   GameOnlinePage({Key key, this.title, this.roomId}) : super(key: key);
