@@ -9,6 +9,7 @@ class Game {
   List<Tile> tiles;
   List<Player> players;
   List<Player> bombs;
+  List<String> turnStates;
   String currentTurnState;
   Player currentPlayer;
   bool canGuess;
@@ -29,6 +30,8 @@ class Game {
     this.currentTurnState = currentTurnState;
     this.currentPlayer = currentPlayer;
     this.canGuess = canGuess;
+
+    this.turnStates = ['code_viewing', 'guessing'];
   }
 
   factory Game.fromMap(Map<dynamic, dynamic> map) { //, {this.reference})

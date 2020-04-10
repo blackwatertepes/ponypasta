@@ -4,12 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../models/game.dart';
-import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
-import '../utils/utils.dart';
+import '../utils/game.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -87,48 +86,22 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    Player nextPlayer() {
-      return nextInList(widget.game.players, widget.game.currentPlayer);
-    }
-
-    bool isCodeViewing() {
-      return widget.game.currentTurnState == 'code_viewing';
-    }
-
-    String endTurnLabel() {
-      if (!isCodeViewing()) {
-        return "Begin Turn (View Codes 4 ${nextPlayer().name})";
-      }
-      return "End Turn (Hide Codes)";
-    }
-
-    void endTurn() {
-      setState(() {
-        widget.game.currentTurnState = nextInList(widget.turnStates, widget.game.currentTurnState);
-        if (isCodeViewing()) {
-          widget.game.currentPlayer = nextPlayer();
-        } else {
-          widget.game.canGuess = true;
-        }
-      });
-    }
 
     if (widget.game == null) {
       return Scaffold(
-        appBar: AppBar(title: Text("Loading...")),
-        body: Text("Loading...")
+        appBar: AppBar(title: Center(child: Text("Loading..."))),
+        body: Center(child: Text("Loading..."))
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.title} | ${widget.roomId}"),
+        title: Center(child: Text("${widget.title} | ${widget.roomId}")),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.check),
             tooltip: 'End Turn',
-            onPressed: () {
-              endTurn();
+            onPressed: () { setState(() => endTurn(widget.game));
             },
           ),
         ],
@@ -137,7 +110,7 @@ class _GamePageState extends State<GamePage> {
         Pips(players: widget.game.players),
         Board(
           currentPlayer: widget.game.currentPlayer,
-          isCodeViewing: isCodeViewing(),
+          isCodeViewing: isCodeViewing(widget.game),
           tiles: widget.game.tiles,
           onClickTile: (Tile tile) {
             if (widget.game.canGuess) {
@@ -160,8 +133,8 @@ class _GamePageState extends State<GamePage> {
         FractionallySizedBox(
           widthFactor: 0.9,
           child: OutlineButton(
-            onPressed: () { endTurn(); },
-            child: Text(endTurnLabel()),
+            onPressed: () { setState(() => endTurn(widget.game)); },
+            child: Text(endTurnLabel(widget.game)),
           ),
         ),
       ]),
