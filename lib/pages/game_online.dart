@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -13,6 +11,7 @@ import '../components/board.dart';
 import '../components/pips.dart';
 import '../components/dialogs/game_over.dart';
 import '../components/dialogs/new_game.dart';
+import '../utils/game.dart';
 import '../utils/utils.dart';
 
 class GameOnlinePage extends StatefulWidget {
@@ -39,15 +38,6 @@ class _GamePageState extends State<GameOnlinePage> {
 
   DatabaseReference _gameRef;
 
-  void _addTilesForPlayer(player) {
-    while (widget.tiles.where((tile) => tile.owner == player).length < player.tileCount) {
-      List<Tile> unassignedTiles = widget.tiles.where((tile) => !tile.hasOwner()).toList();
-      int n = Random().nextInt(unassignedTiles.length);
-      Tile tile = unassignedTiles[n];
-      tile.owner = player;
-    }
-  }
-
   void _resetGame() {
     widget.tiles = getRandomWords(words(), 25).map((word) => Tile.fromWord(word)).toList();
     widget.players = [
@@ -59,8 +49,8 @@ class _GamePageState extends State<GameOnlinePage> {
       new Player('bomb', Colors.grey, Colors.grey, 1),
     ];
 
-    widget.players.forEach((player) => _addTilesForPlayer(player));
-    widget.bombs.forEach((player) => _addTilesForPlayer(player));
+    widget.players.forEach((player) => addTilesForPlayer(player, widget.tiles));
+    widget.bombs.forEach((player) => addTilesForPlayer(player, widget.tiles));
 
     widget.currentTurnState = widget.turnStates.first;
     widget.currentPlayer = widget.players.first;
@@ -131,15 +121,6 @@ class _GamePageState extends State<GameOnlinePage> {
   @override
   Widget build(BuildContext context) {
 
-    void addTilesForPlayer(player) {
-      while (widget.tiles.where((tile) => tile.owner == player).length < player.tileCount) {
-        List<Tile> unassignedTiles = widget.tiles.where((tile) => !tile.hasOwner()).toList();
-        int n = Random().nextInt(unassignedTiles.length);
-        Tile tile = unassignedTiles[n];
-        tile.owner = player;
-      }
-    }
-
     void resetGame() {
       setState(() {
         widget.tiles = getRandomWords(words(), 25).map((word) => Tile.fromWord(word)).toList();
@@ -152,8 +133,8 @@ class _GamePageState extends State<GameOnlinePage> {
           new Player('bomb', Colors.grey, Colors.grey, 1),
         ];
 
-        widget.players.forEach((player) => addTilesForPlayer(player));
-        widget.bombs.forEach((player) => addTilesForPlayer(player));
+        widget.players.forEach((player) => addTilesForPlayer(player, widget.tiles));
+        widget.bombs.forEach((player) => addTilesForPlayer(player, widget.tiles));
 
         widget.currentTurnState = widget.turnStates.first;
         widget.currentPlayer = widget.players.first;
