@@ -13,6 +13,7 @@ import '../components/board.dart';
 import '../components/pips.dart';
 import '../components/dialogs/game_over.dart';
 import '../components/dialogs/new_game.dart';
+import '../utils/utils.dart';
 
 class GameOnlinePage extends StatefulWidget {
   GameOnlinePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -164,21 +165,7 @@ class _GamePageState extends State<GameOnlinePage> {
     }
 
     Player nextPlayer() {
-      for (var i = 0; i < widget.players.length - 1; i++) {
-        if (widget.players[i] == widget.currentPlayer) {
-          return widget.players[i + 1];
-        }
-      }
-      return widget.players.first;
-    }
-
-    String nextAction() {
-      for (var i = 0; i < widget.turnStates.length - 1; i++) {
-        if (widget.turnStates[i] == widget.currentTurnState) {
-          return widget.turnStates[i + 1];
-        }
-      }
-      return widget.turnStates.first;
+      return nextInList(widget.players, widget.currentPlayer);
     }
 
     bool isCodeViewing() {
@@ -194,7 +181,7 @@ class _GamePageState extends State<GameOnlinePage> {
 
     void endTurn() {
       setState(() {
-        widget.currentTurnState = nextAction();
+        widget.currentTurnState = nextInList(widget.turnStates, widget.currentTurnState);
         if (isCodeViewing()) {
           widget.currentPlayer = nextPlayer();
         } else {

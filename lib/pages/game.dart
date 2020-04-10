@@ -11,6 +11,7 @@ import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
+import '../utils/utils.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId}) : super(key: key);
@@ -89,21 +90,7 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     Player nextPlayer() {
-      for (var i = 0; i < widget.game.players.length - 1; i++) {
-        if (widget.game.players[i] == widget.game.currentPlayer) {
-          return widget.game.players[i + 1];
-        }
-      }
-      return widget.game.players.first;
-    }
-
-    String nextAction() {
-      for (var i = 0; i < widget.turnStates.length - 1; i++) {
-        if (widget.turnStates[i] == widget.game.currentTurnState) {
-          return widget.turnStates[i + 1];
-        }
-      }
-      return widget.turnStates.first;
+      return nextInList(widget.game.players, widget.game.currentPlayer);
     }
 
     bool isCodeViewing() {
@@ -119,7 +106,7 @@ class _GamePageState extends State<GamePage> {
 
     void endTurn() {
       setState(() {
-        widget.game.currentTurnState = nextAction();
+        widget.game.currentTurnState = nextInList(widget.turnStates, widget.game.currentTurnState);
         if (isCodeViewing()) {
           widget.game.currentPlayer = nextPlayer();
         } else {
