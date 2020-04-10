@@ -38,23 +38,8 @@ class _GamePageState extends State<GamePage> {
   Future<void> _getRoom() async {
 
     WidgetsFlutterBinding.ensureInitialized();
-    final FirebaseApp app = await FirebaseApp.configure(
-      name: 'db2',
-      options: Platform.isIOS
-          ? const FirebaseOptions(
-              googleAppID: '1:1075489014656:ios:42b6bc3b0339e51bb83765',
-              gcmSenderID: '297855924061',
-              databaseURL: 'https://codefriendsflutter.firebaseio.com',
-            )
-          : const FirebaseOptions(
-              googleAppID: '1:1075489014656:android:d7b35721f72ffe60b83765',
-              apiKey: 'AIzaSyB7HTRLtO24bEW6HIlE0yfA7Bh1HmlKyUo',
-              databaseURL: 'https://codefriendsflutter.firebaseio.com',
-            ),
-    );
-
     _gameRef = FirebaseDatabase.instance.reference().child("game-${widget.roomId}");
-    final FirebaseDatabase database = FirebaseDatabase(app: app);
+    final FirebaseDatabase database = FirebaseDatabase();
     database.reference().child("game-${widget.roomId}").once().then((DataSnapshot snapshot) {
       print("Connected to second database and read ${snapshot.value}");
       print("currentTurnState: ${snapshot.value['currentTurnState']}");
