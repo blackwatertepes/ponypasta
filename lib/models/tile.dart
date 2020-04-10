@@ -25,12 +25,12 @@ class Tile {
     return this.owner != null;
   }
 
-  Tile.fromMap(Map<String, dynamic> map)//, {this.reference})
+  // TODO: Add owner...
+  Tile.fromMap(Map<dynamic, dynamic> map)//, {this.reference})
      : assert(map['name'] != null),
-       assert(map['owner'] != null),
        assert(map['selected'] != null),
        name = map['name'],
-       owner = map['owner'],
+      //  owner = map['owner'] ? Player.fromMap(map['owner']) : null,
        selected = map['selected'];
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)

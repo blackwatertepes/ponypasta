@@ -31,21 +31,43 @@ class Game {
     this.canGuess = canGuess;
   }
 
-  Game.fromMap(Map<String, dynamic> map)//, {this.reference})
-     : assert(map['roomId'] != null),
-       assert(map['tiles'] != null),
-       assert(map['players'] != null),
-       assert(map['bombs'] != null),
-       assert(map['currentTurnState'] != null),
-       assert(map['currentPlayer'] != null),
-       assert(map['canGuess'] != null),
-       roomId = map['roomId'],
-       tiles = map['tiles'],
-       players = map['players'],
-       bombs = map['bombs'],
-       currentTurnState = map['currentTurnState'],
-       currentPlayer = map['currentPlayer'],
-       canGuess = map['canGuess'];
+  factory Game.fromMap(Map<dynamic, dynamic> map) { //, {this.reference})
+    assert(map['roomId'] != null);
+    assert(map['tiles'] != null);
+    assert(map['players'] != null);
+    assert(map['bombs'] != null);
+    assert(map['currentTurnState'] != null);
+    assert(map['currentPlayer'] != null);
+    assert(map['canGuess'] != null);
+
+    List<Tile> tiles = List();
+    for (var i = 0; i < map['tiles'].length; i++) {
+      Tile tile = Tile.fromMap(map['tiles'][i]);
+      tiles.add(tile);
+    }
+
+    List<Player> players = List();
+    for (var i = 0; i < map['players'].length; i++) {
+      Player player = Player.fromMap(map['players'][i]);
+      players.add(player);
+    }
+
+    List<Player> bombs = List();
+    for (var i = 0; i < map['bombs'].length; i++) {
+      Player bomb = Player.fromMap(map['bombs'][i]);
+      bombs.add(bomb);
+    }
+
+    return new Game(
+      map['roomId'],
+      tiles,
+      players,
+      bombs,
+      map['currentTurnState'],
+      Player.fromMap(map['currentPlayer']),
+      map['canGuess'],
+    );
+  }
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);

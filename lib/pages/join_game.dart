@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './game_online.dart';
+import './game.dart';
 
 class JoinGamePage extends StatefulWidget {
   JoinGamePage({Key key, this.title}) : super(key: key);
@@ -45,7 +45,7 @@ class _JoinGamePageState extends State<JoinGamePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GameOnlinePage(title: widget.title, roomId: widget.roomId)
+                    builder: (context) => GamePage(title: widget.title, roomId: widget.roomId)
                   )
                 );
               },

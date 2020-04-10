@@ -35,14 +35,11 @@ class Player {
     return list;
   }
 
-  Player.fromMap(Map<String, dynamic> map)//, {this.reference})
+  // TODO: Add colors (from name)...
+  Player.fromMap(Map<dynamic, dynamic> map)//, {this.reference})
      : assert(map['name'] != null),
-       assert(map['baseColor'] != null),
-       assert(map['fillColor'] != null),
        assert(map['tileCount'] != null),
        name = map['name'],
-       baseColor = map['baseColor'],
-       fillColor = map['fillColor'],
        tileCount = map['tileCount'];
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)
