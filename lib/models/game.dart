@@ -75,8 +75,8 @@ class Game {
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);
 
-  Map toMap() {
-    Map toReturn = new Map();
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> toReturn = new Map();
     toReturn['roomId'] = roomId;
     toReturn['tiles'] = tiles.map((tile) => tile.toMap()).toList();
     toReturn['players'] = players.map((player) => player.toMap()).toList();

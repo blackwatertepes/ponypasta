@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/game.dart';
 import '../models/player.dart';
@@ -30,11 +30,7 @@ class GameOnlinePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-// TODO: Refactor into sharable components between both game pages
-
 class _GamePageState extends State<GameOnlinePage> {
-
-  DatabaseReference _gameRef;
 
   @override
   void initState() {
@@ -57,30 +53,9 @@ class _GamePageState extends State<GameOnlinePage> {
     );
 
     WidgetsFlutterBinding.ensureInitialized();
-    _gameRef = FirebaseDatabase.instance.reference().child("game-${widget.roomId}");
-    final FirebaseDatabase database = FirebaseDatabase();
-    database.reference().child("game-${widget.roomId}").once().then((DataSnapshot snapshot) {
-      print("Connected to second database and read ${snapshot.value}");
-    });
-    database.setPersistenceEnabled(true);
-    // database.setPersistenceCacheSizeBytes(1000000);
-    _gameRef.keepSynced(true);
+    CollectionReference _gamesCol = Firestore.instance.collection("games");
 
-    final TransactionResult transactionResult = 
-      await _gameRef.runTransaction((MutableData mutableData) async {
-        mutableData.value = game.toMap();
-        return mutableData;
-      });
-    
-    if (transactionResult.committed) {
-      print("Write success!");
-      print(transactionResult.dataSnapshot.value);
-    } else {
-      print("Write failure!");
-      if (transactionResult.error != null) {
-        print(transactionResult.error.message);
-      }
-    }
+    _gamesCol.add(game.toMap());
   }
 
   @override
