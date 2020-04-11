@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import './player.dart';
 import './tile.dart';
@@ -34,7 +33,7 @@ class Game {
     this.turnStates = ['code_viewing', 'guessing'];
   }
 
-  factory Game.fromMap(Map<dynamic, dynamic> map) { //, {this.reference})
+  factory Game.fromMap(Map<String, dynamic> map) { //, {this.reference})
     assert(map['roomId'] != null);
     assert(map['tiles'] != null);
     assert(map['players'] != null);

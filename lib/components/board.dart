@@ -24,7 +24,7 @@ class Board extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
-            colors: [this.currentPlayer.baseColor, this.currentPlayer.fillColor], // TODO
+            colors: [this.currentPlayer.baseColor, this.currentPlayer.fillColor],
           )
         ),
         child: GridView.count(

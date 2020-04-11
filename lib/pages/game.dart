@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/game.dart';
 import '../models/tile.dart';
@@ -22,11 +21,7 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-// TODO: Refactor into sharable components between both game pages
-
 class _GamePageState extends State<GamePage> {
-
-  DatabaseReference _gameRef;
 
   @override
   void initState() {
@@ -36,49 +31,30 @@ class _GamePageState extends State<GamePage> {
   }
 
   Future<void> _getRoom() async {
-
     WidgetsFlutterBinding.ensureInitialized();
-    _gameRef = FirebaseDatabase.instance.reference().child("game-${widget.roomId}");
-    final FirebaseDatabase database = FirebaseDatabase();
-    database.reference().child("game-${widget.roomId}").once().then((DataSnapshot snapshot) {
-      print("Connected to second database and read ${snapshot.value}");
-      print("currentTurnState: ${snapshot.value['currentTurnState']}");
-      print("canGuess: ${snapshot.value['canGuess']}");
-      print("roomId: ${snapshot.value['roomId']}");
-      print("Game: ${Game.fromMap(snapshot.value)}");
-      setState(() {
-        widget.game = Game.fromMap(snapshot.value);
-      });
-    });
-    database.setPersistenceEnabled(true);
-    // database.setPersistenceCacheSizeBytes(1000000);
-    _gameRef.keepSynced(true);
+    CollectionReference _gamesCol = Firestore.instance.collection("games");
 
-    _gameRef.onValue.listen((Event event) {
-      print("Event: ${event}");
-      // setState(() {
-      //   _error = null;
-      //   _counter = event.snapshot.value ?? 0;
-      // });
-    }, onError: (Object o) {
-      print("Error: ${o}");
-      // final DatabaseError error = o;
-      // setState(() {
-      //   _error = error;
-      // });
+    _gamesCol.where("roomId", isEqualTo: widget.roomId).snapshots().listen((data) {
+      data.documents.forEach((doc) => doc["roomId"]);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder( // TODO: Use widget.roomId
+      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: '753773').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        print("Data: ${snapshot.data.documents[0].data}");
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting: return new Text('Loading...');
+          default: return buildGame(context, Game.fromMap(snapshot.data.documents[0].data));
+        }
+      }
+    );
+  }
 
-    if (widget.game == null) {
-      return Scaffold(
-        appBar: AppBar(title: Center(child: Text("Loading..."))),
-        body: Center(child: Text("Loading..."))
-      );
-    }
-
+  Widget buildGame(BuildContext context, Game game) {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("${widget.title} | ${widget.roomId}")),
@@ -86,27 +62,27 @@ class _GamePageState extends State<GamePage> {
           IconButton(
             icon: const Icon(Icons.check),
             tooltip: 'End Turn',
-            onPressed: () { setState(() => endTurn(widget.game));
+            onPressed: () { setState(() => endTurn(game));
             },
           ),
         ],
       ),
       body: Column(children: <Widget>[
-        Pips(players: widget.game.players),
+        Pips(players: game.players),
         Board(
-          currentPlayer: widget.game.currentPlayer,
-          isCodeViewing: isCodeViewing(widget.game),
-          tiles: widget.game.tiles,
+          currentPlayer: game.currentPlayer,
+          isCodeViewing: isCodeViewing(game),
+          tiles: game.tiles,
           onClickTile: (Tile tile) {
-            if (widget.game.canGuess) {
+            if (game.canGuess) {
               setState(() {
                 tile.select();
-                widget.game.canGuess = false;
+                game.canGuess = false;
                 if (tile.hasOwner() && tile.owner.name == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
-                if (tile.hasOwner() && tile.owner == widget.game.currentPlayer) {
-                  widget.game.canGuess = true;
+                if (tile.hasOwner() && tile.owner == game.currentPlayer) {
+                  game.canGuess = true;
                   if (tile.owner.hasWon()) {
                     gameOver(context, "${tile.owner.name} has won!!!");
                   }
@@ -118,8 +94,8 @@ class _GamePageState extends State<GamePage> {
         FractionallySizedBox(
           widthFactor: 0.9,
           child: OutlineButton(
-            onPressed: () { setState(() => endTurn(widget.game)); },
-            child: Text(endTurnLabel(widget.game)),
+            onPressed: () { setState(() => endTurn(game)); },
+            child: Text(endTurnLabel(game)),
           ),
         ),
       ]),

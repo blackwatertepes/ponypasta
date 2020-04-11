@@ -35,12 +35,28 @@ class Player {
     return list;
   }
 
-  // TODO: Add colors (from name)...
-  Player.fromMap(Map<dynamic, dynamic> map)//, {this.reference})
-     : assert(map['name'] != null),
-       assert(map['tileCount'] != null),
-       name = map['name'],
-       tileCount = map['tileCount'];
+  factory Player.fromMap(Map<String, dynamic> map) { //, {this.reference})
+    assert(map['name'] != null);
+    assert(map['tileCount'] != null);
+
+    Color baseColor;
+    Color fillColor;
+
+    if (map['name'] == 'red') {
+      baseColor = Colors.red[100];
+      fillColor = Colors.red;
+    } else {
+      baseColor = Colors.blue[100];
+      fillColor = Colors.blue;
+    }
+
+    return new Player(
+      map['name'],
+      baseColor,
+      fillColor,
+      map['tileCount'],
+    );
+  }
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);
