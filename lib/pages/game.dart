@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/game.dart';
+import '../models/player.dart';
 import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
@@ -42,10 +43,9 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: '753773').snapshots(),
+      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: '346861').snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-        print("Data: ${snapshot.data.documents[0].data}");
         switch (snapshot.connectionState) {
           case ConnectionState.waiting: return new Text('Loading...');
           default: return buildGame(context, Game.fromMap(snapshot.data.documents[0].data));
@@ -71,20 +71,23 @@ class _GamePageState extends State<GamePage> {
         Pips(players: game.players),
         Board(
           currentPlayer: game.currentPlayer,
+          players: game.players,
           isCodeViewing: isCodeViewing(game),
           tiles: game.tiles,
           onClickTile: (Tile tile) {
             if (game.canGuess) {
               setState(() {
+                final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
+                player.incScore();
                 tile.select();
                 game.canGuess = false;
-                if (tile.hasOwner() && tile.owner.name == "bomb") {
+                if (tile.hasOwner() && tile.ownerName == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
-                if (tile.hasOwner() && tile.owner.name == game.currentPlayer.name) {
+                if (tile.hasOwner() && tile.ownerName == game.currentPlayer.name) {
                   game.canGuess = true;
-                  if (tile.owner.hasWon()) {
-                    gameOver(context, "${tile.owner.name} has won!!!");
+                  if (player.hasWon()) {
+                    gameOver(context, "${tile.ownerName} has won!!!");
                   }
                 }
               });

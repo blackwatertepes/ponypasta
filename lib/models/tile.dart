@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 
-import './Player.dart';
-
 class Tile {
   String name;
-  Player owner = null;
+  String ownerName = null;
   bool selected = false;
 
-  Tile(String name, {Player owner= null, bool selected= false}) {
+  Tile(String name, {String ownerName= null, bool selected= false}) {
     this.name = name;
-    this.owner = owner;
+    this.ownerName = ownerName;
     this.selected = selected;
   }
 
-  void select() {
+  String select() {
     this.selected = true;
-    if (this.hasOwner()) {
-      owner.incScore();
-    }
+    return this.ownerName;
   }
 
   bool hasOwner() {
-    return this.owner != null;
+    return this.ownerName != null;
   }
 
   factory Tile.fromMap(Map<String, dynamic> map) { //, {this.reference})
@@ -33,10 +29,7 @@ class Tile {
       map['name'],
     );
 
-    if (map['owner'] != null) {
-      tile.owner = Player.fromMap(map['owner']);
-    }
-
+    tile.ownerName = map['ownerName'];
     tile.selected = map['selected'];
 
     return tile;
@@ -48,7 +41,7 @@ class Tile {
   Map toMap() {
     Map toReturn = new Map();
     toReturn['name'] = name;
-    toReturn['owner'] = owner?.toMap();
+    toReturn['ownerName'] = ownerName;
     toReturn['selected'] = selected;
     return toReturn;
   }

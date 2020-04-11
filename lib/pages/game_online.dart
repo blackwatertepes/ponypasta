@@ -95,20 +95,23 @@ class _GamePageState extends State<GameOnlinePage> {
         Pips(players: widget.players),
         Board(
           currentPlayer: widget.currentPlayer,
+          players: widget.players,
           isCodeViewing: isCodeViewing(widget),
           tiles: widget.tiles,
           onClickTile: (Tile tile) {
             if (widget.canGuess) {
               setState(() {
+                final Player player = widget.players.firstWhere((player) => player.name == tile.ownerName);
+                player.incScore();
                 tile.select();
                 widget.canGuess = false;
-                if (tile.hasOwner() && tile.owner.name == "bomb") {
+                if (tile.hasOwner() && tile.ownerName == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
-                if (tile.hasOwner() && tile.owner.name == widget.currentPlayer.name) {
+                if (tile.hasOwner() && tile.ownerName == widget.currentPlayer.name) {
                   widget.canGuess = true;
-                  if (tile.owner.hasWon()) {
-                    gameOver(context, "${tile.owner.name} has won!!!");
+                  if (player.hasWon()) {
+                    gameOver(context, "${tile.ownerName} has won!!!");
                   }
                 }
               });

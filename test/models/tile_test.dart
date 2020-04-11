@@ -15,14 +15,14 @@ void main() {
     });
 
     test('init', () {
-      expect(tile.owner, null);
+      expect(tile.ownerName, null);
       expect(tile.selected, false);
       expect(tile.hasOwner(), false);
     });
 
     group('when assigned', () {
       setUp(() {
-        // tile.owner = player;
+        tile.ownerName = player.name;
       });
 
       test('has an owner', () {
@@ -34,9 +34,8 @@ void main() {
           tile.select();
         });
 
-        test('increments the score for the owner', () {
+        test('selects the file', () {
           expect(tile.selected, true);
-          expect(tile.owner.score, 1);
         });
       });
     });

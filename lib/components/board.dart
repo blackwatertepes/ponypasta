@@ -5,6 +5,7 @@ import '../models/tile.dart';
 
 class Board extends StatelessWidget {
   Player currentPlayer;
+  List<Player> players;
   bool isCodeViewing;
   Function onClickTile;
   List<Tile> tiles;
@@ -12,6 +13,7 @@ class Board extends StatelessWidget {
   Board({
     Key key,
     this.currentPlayer,
+    this.players,
     this.isCodeViewing,
     this.onClickTile,
     this.tiles,
@@ -42,20 +44,22 @@ class Board extends StatelessWidget {
 
   Widget _buildTile(BuildContext context, Tile tile) {
 
-    bool _canViewTile(String owner_name) {
-      return this.currentPlayer.name == owner_name;// || owner.name == 'bomb'; // coop can't see bombs
+    bool _canViewTile(String ownerName) {
+      return this.currentPlayer.name == ownerName;// || owner.name == 'bomb'; // coop can't see bombs
     }
 
     Color _tileColor() {
-      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner.name)) || tile.selected)) {
-        return tile.owner.baseColor;
+      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.ownerName)) || tile.selected)) {
+        final Player player = this.players.firstWhere((player) => player.name == tile.ownerName);
+        return player.baseColor;
       }
       return Colors.grey[300];
     }
 
     Color _iconColor() {
-      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner.name)) || tile.selected)) {
-        return tile.owner.fillColor;
+      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.ownerName)) || tile.selected)) {
+        final Player player = this.players.firstWhere((player) => player.name == tile.ownerName);
+        return player.fillColor;
       }
       return Colors.grey[300];
     }
