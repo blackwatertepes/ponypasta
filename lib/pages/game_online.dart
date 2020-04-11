@@ -25,6 +25,7 @@ class GameOnlinePage extends StatefulWidget {
   Player currentPlayer;
   bool canGuess = false;
   int gameRoomId = 0;
+  DocumentReference gameDoc;
 
   @override
   _GamePageState createState() => _GamePageState();
@@ -41,7 +42,6 @@ class _GamePageState extends State<GameOnlinePage> {
   }
 
   Future<void> _createRoom() async {
-
     Game game = Game(
       widget.roomId,
       widget.tiles,
@@ -55,11 +55,24 @@ class _GamePageState extends State<GameOnlinePage> {
     WidgetsFlutterBinding.ensureInitialized();
     CollectionReference _gamesCol = Firestore.instance.collection("games");
 
-    _gamesCol.add(game.toMap());
+    widget.gameDoc = await _gamesCol.add(game.toMap());
   }
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _updateRoom() async {
+      Game game = Game(
+        widget.roomId,
+        widget.tiles,
+        widget.players,
+        widget.bombs,
+        widget.currentTurnState,
+        widget.currentPlayer,
+        widget.canGuess,
+      );
+
+      await widget.gameDoc.updateData(game.toMap());
+    }
 
     if (widget.currentPlayer == null) {
       setState(() {
@@ -100,6 +113,7 @@ class _GamePageState extends State<GameOnlinePage> {
                   }
                 }
               });
+              _updateRoom();
             }
           }
         ),
@@ -114,7 +128,10 @@ class _GamePageState extends State<GameOnlinePage> {
         FractionallySizedBox(
           widthFactor: 0.9,
           child: OutlineButton(
-            onPressed: () { neverSatisfied(context, () => setState(() => newGame(widget))); },
+            onPressed: () { neverSatisfied(context, () {
+              setState(() => newGame(widget));
+              _updateRoom();
+            }); },
             child: const Text('New Game'),
           ),
         ),
