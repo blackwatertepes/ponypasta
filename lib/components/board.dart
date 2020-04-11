@@ -42,19 +42,19 @@ class Board extends StatelessWidget {
 
   Widget _buildTile(BuildContext context, Tile tile) {
 
-    bool _canViewTile(Player owner) {
-      return this.currentPlayer == owner;// || owner.name == 'bomb'; // coop can't see bombs
+    bool _canViewTile(String owner_name) {
+      return this.currentPlayer.name == owner_name;// || owner.name == 'bomb'; // coop can't see bombs
     }
 
     Color _tileColor() {
-      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner)) || tile.selected)) {
+      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner.name)) || tile.selected)) {
         return tile.owner.baseColor;
       }
       return Colors.grey[300];
     }
 
     Color _iconColor() {
-      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner)) || tile.selected)) {
+      if (tile.hasOwner() && ((this.isCodeViewing && _canViewTile(tile.owner.name)) || tile.selected)) {
         return tile.owner.fillColor;
       }
       return Colors.grey[300];

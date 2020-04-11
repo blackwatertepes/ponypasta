@@ -5,7 +5,7 @@ import './Player.dart';
 
 class Tile {
   String name;
-  dynamic owner = null;
+  Player owner = null;
   bool selected = false;
 
   Tile(String name, {Player owner= null, bool selected= false}) {
@@ -25,13 +25,22 @@ class Tile {
     return this.owner != null;
   }
 
-  // TODO: Add owner...
-  Tile.fromMap(Map<dynamic, dynamic> map)//, {this.reference})
-     : assert(map['name'] != null),
-       assert(map['selected'] != null),
-       name = map['name'],
-      //  owner = map['owner'] ? Player.fromMap(map['owner']) : null,
-       selected = map['selected'];
+  factory Tile.fromMap(Map<String, dynamic> map) { //, {this.reference})
+    assert(map['name'] != null);
+    assert(map['selected'] != null);
+
+    Tile tile =  new Tile(
+      map['name'],
+    );
+
+    if (map['owner'] != null) {
+      tile.owner = Player.fromMap(map['owner']);
+    }
+
+    tile.selected = map['selected'];
+
+    return tile;
+  }
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)
   //    : this.fromMap(snapshot.data, reference: snapshot.reference);

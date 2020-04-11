@@ -69,7 +69,7 @@ class _GamePageState extends State<GameOfflinePage> {
                 if (tile.hasOwner() && tile.owner.name == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
-                if (tile.hasOwner() && tile.owner == widget.currentPlayer) {
+                if (tile.hasOwner() && tile.owner.name == widget.currentPlayer.name) {
                   widget.canGuess = true;
                   if (tile.owner.hasWon()) {
                     gameOver(context, "${tile.owner.name} has won!!!");

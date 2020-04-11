@@ -41,7 +41,7 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder( // TODO: Use widget.roomId
+    return StreamBuilder(
       stream: Firestore.instance.collection('games').where("roomId", isEqualTo: '753773').snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
@@ -81,7 +81,7 @@ class _GamePageState extends State<GamePage> {
                 if (tile.hasOwner() && tile.owner.name == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
-                if (tile.hasOwner() && tile.owner == game.currentPlayer) {
+                if (tile.hasOwner() && tile.owner.name == game.currentPlayer.name) {
                   game.canGuess = true;
                   if (tile.owner.hasWon()) {
                     gameOver(context, "${tile.owner.name} has won!!!");

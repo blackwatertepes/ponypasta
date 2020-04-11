@@ -22,7 +22,7 @@ void main() {
 
     group('when assigned', () {
       setUp(() {
-        tile.owner = player;
+        // tile.owner = player;
       });
 
       test('has an owner', () {

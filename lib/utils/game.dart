@@ -7,11 +7,11 @@ import '../models/tile.dart';
 import '../utils/utils.dart';
 
 void addTilesForPlayer(Player player, List<Tile>tiles) {
-  while (tiles.where((tile) => tile.owner == player).length < player.tileCount) {
+  while (tiles.where((tile) => tile.owner.name == player.name).length < player.tileCount) {
     List<Tile> unassignedTiles = tiles.where((tile) => !tile.hasOwner()).toList();
     int n = Random().nextInt(unassignedTiles.length);
     Tile tile = unassignedTiles[n];
-    tile.owner = player;
+    // tile.owner = player;
   }
 }
 

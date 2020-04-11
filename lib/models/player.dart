@@ -50,12 +50,18 @@ class Player {
       fillColor = Colors.blue;
     }
 
-    return new Player(
+    Player player = new Player(
       map['name'],
       baseColor,
       fillColor,
       map['tileCount'],
     );
+
+    while (player.score < map['score']) {
+      player.incScore();
+    }
+
+    return player;
   }
 
   // Player.fromSnapshot(DocumentSnapshot snapshot)
