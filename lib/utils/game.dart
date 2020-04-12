@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../data/words.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
-import '../utils/utils.dart';
+
 
 void addTilesForPlayer(Player player, List<Tile>tiles) {
   while (tiles.where((tile) => tile.ownerName == player.name).length < player.tileCount) {
@@ -28,31 +28,4 @@ void newGame(game) {
 
   game.players.forEach((player) => addTilesForPlayer(player, game.tiles));
   game.bombs.forEach((player) => addTilesForPlayer(player, game.tiles));
-
-  game.currentTurnState = game.turnStates.first;
-  game.currentPlayer = game.players.first;
-}
-
-Player nextPlayer(game) {
-  return nextInList(game.players, game.currentPlayer);
-}
-
-bool isCodeViewing(game) {
-  return game.currentTurnState == 'code_viewing';
-}
-
-String endTurnLabel(game) {
-  if (!isCodeViewing(game)) {
-    return "Begin Turn (View Codes 4 ${nextPlayer(game).name})";
-  }
-  return "End Turn (Hide Codes)";
-}
-
-void endTurn(game) {
-  game.currentTurnState = nextInList(game.turnStates, game.currentTurnState);
-  if (isCodeViewing(game)) {
-    game.currentPlayer = nextPlayer(game);
-  } else {
-    game.canGuess = true;
-  }
 }

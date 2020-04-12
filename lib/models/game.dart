@@ -9,28 +9,20 @@ class Game {
   List<Player> players;
   List<Player> bombs;
   List<String> turnStates;
-  String currentTurnState;
   Player currentPlayer;
-  bool canGuess;
 
   Game(
     String roomId,
     List<Tile> tiles,
     List<Player> players,
     List<Player> bombs,
-    String currentTurnState,
     Player currentPlayer,
-    bool canGuess,
   ) {
     this.roomId = roomId;
     this.tiles = tiles;
     this.players = players;
     this.bombs = bombs;
-    this.currentTurnState = currentTurnState;
     this.currentPlayer = currentPlayer;
-    this.canGuess = canGuess;
-
-    this.turnStates = ['code_viewing', 'guessing'];
   }
 
   factory Game.fromMap(Map<String, dynamic> map) { //, {this.reference})
@@ -38,9 +30,7 @@ class Game {
     assert(map['tiles'] != null);
     assert(map['players'] != null);
     assert(map['bombs'] != null);
-    assert(map['currentTurnState'] != null);
     assert(map['currentPlayer'] != null);
-    assert(map['canGuess'] != null);
 
     List<Tile> tiles = List();
     for (var i = 0; i < map['tiles'].length; i++) {
@@ -65,9 +55,7 @@ class Game {
       tiles,
       players,
       bombs,
-      map['currentTurnState'],
       Player.fromMap(map['currentPlayer']),
-      map['canGuess'],
     );
   }
 
@@ -80,9 +68,7 @@ class Game {
     toReturn['tiles'] = tiles.map((tile) => tile.toMap()).toList();
     toReturn['players'] = players.map((player) => player.toMap()).toList();
     toReturn['bombs'] = bombs.map((bomb) => bomb.toMap()).toList();
-    toReturn['currentTurnState'] = currentTurnState;
     toReturn['currentPlayer'] = currentPlayer.toMap();
-    toReturn['canGuess'] = canGuess;
     return toReturn;
   }
 

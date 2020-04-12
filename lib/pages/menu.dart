@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-import './game_online.dart';
+import './create_game.dart';
 import './game_offline.dart';
-import './join_game.dart';
+import './find_game.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({Key key, this.title}) : super(key: key);
@@ -49,7 +49,7 @@ class _MenuPageState extends State<MenuPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => GameOnlinePage(title: widget.title, roomId: _generateRoomId())
+                    builder: (context) => CreateGamePage(title: widget.title, roomId: _generateRoomId())
                   )
                 );
               },
@@ -66,7 +66,7 @@ class _MenuPageState extends State<MenuPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => JoinGamePage(title: widget.title)
+                    builder: (context) => FindGamePage(title: widget.title)
                   )
                 );
               },

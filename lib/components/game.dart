@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -8,14 +7,14 @@ import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
-import '../utils/game.dart';
+import '../utils/utils.dart';
 
 class GamePage extends StatefulWidget {
-  GamePage({Key key, this.title, this.roomId}) : super(key: key);
+  GamePage({Key key, this.title, this.roomId, this.isPlayer}) : super(key: key);
 
   final String title;
   final String roomId;
-  final List<String> turnStates = ['code_viewing', 'guessing'];
+  final String isPlayer;
   Game game;
 
   @override
@@ -23,23 +22,6 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
-
-  @override
-  void initState() {
-    super.initState();
-
-    _getRoom();
-  }
-
-  Future<void> _getRoom() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    CollectionReference _gamesCol = Firestore.instance.collection("games");
-
-    _gamesCol.where("roomId", isEqualTo: widget.roomId).snapshots().listen((data) {
-      data.documents.forEach((doc) => doc["roomId"]);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -55,37 +37,58 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildGame(BuildContext context, Game game) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(child: Text("${widget.title} | ${widget.roomId}")),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.check),
-            tooltip: 'End Turn',
-            onPressed: () { setState(() => endTurn(game));
-            },
-          ),
-        ],
-      ),
-      body: Column(children: <Widget>[
+    Future<void> _updateRoom() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      CollectionReference _gamesCol = Firestore.instance.collection("games");
+
+      // DocumentReference _gameDoc = _gamesCol.where("roomId", isEqualTo: widget.roomId).getDocuments();
+      // await _gameDoc.updateData(widget.game.toMap());
+    }
+
+    Player _isPlayer() {
+      return game.players.firstWhere((player) => player.name == widget.isPlayer);
+    }
+
+    bool _isCurrent() {
+      return game.currentPlayer.name == widget.isPlayer;
+    }
+
+    Player _nextPlayer(game) {
+      return nextInList(game.players, game.currentPlayer);
+    }
+
+    String _endTurnLabel() {
+      if (!_isCurrent()) {
+        return "Waiting on ${_nextPlayer(game).name}...";
+      }
+      return "End Turn";
+    }
+
+    void _endTurn() {
+      if (_isCurrent()) {
+        game.currentPlayer = _nextPlayer(game);
+        _updateRoom();
+      }
+    }
+
+    return Container(
+      child: Column(children: <Widget>[
         Pips(players: game.players),
         Board(
-          currentPlayer: game.currentPlayer,
+          currentPlayer: _isPlayer(),
           players: game.players,
-          isCodeViewing: isCodeViewing(game),
+          isCodeViewing: true,
           tiles: game.tiles,
           onClickTile: (Tile tile) {
-            if (game.canGuess) {
+            if (_isCurrent()) {
               setState(() {
                 final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
                 player.incScore();
                 tile.select();
-                game.canGuess = false;
                 if (tile.hasOwner() && tile.ownerName == "bomb") {
                   gameOver(context, "You've bown up!");
                 }
                 if (tile.hasOwner() && tile.ownerName == game.currentPlayer.name) {
-                  game.canGuess = true;
                   if (player.hasWon()) {
                     gameOver(context, "${tile.ownerName} has won!!!");
                   }
@@ -93,15 +96,15 @@ class _GamePageState extends State<GamePage> {
               });
             }
           }
-         ),
+        ),
         FractionallySizedBox(
           widthFactor: 0.9,
           child: OutlineButton(
-            onPressed: () { setState(() => endTurn(game)); },
-            child: Text(endTurnLabel(game)),
+            onPressed: () { setState(() => _endTurn()); },
+            child: Text(_endTurnLabel()),
           ),
         ),
-      ]),
+      ])
     );
   }
 }
