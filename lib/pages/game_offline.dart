@@ -29,23 +29,15 @@ class GameOfflinePage extends StatefulWidget {
 
 class _GamePageState extends State<GameOfflinePage> {
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    newGame(widget);
-  }
+  //   newGame(widget);
+  // }
 
   @override
   Widget build(BuildContext context) {
-
-    if (widget.currentPlayer == null) {
-      return Scaffold(
-        appBar: AppBar(title: Center(child: Text("Loading..."))),
-        body: Center(child: CircularProgressIndicator())
-      );
-    }
-
     void newGame(game) {
       game.tiles = getRandomWords(words(), 25).map((word) => Tile.fromWord(word)).toList();
       game.players = [
@@ -62,6 +54,10 @@ class _GamePageState extends State<GameOfflinePage> {
 
       game.currentTurnState = game.turnStates.first;
       game.currentPlayer = game.players.first;
+    }
+
+    if (widget.currentPlayer == null) {
+      newGame(widget);
     }
 
     Player _nextPlayer(game) {
