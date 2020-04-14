@@ -60,7 +60,7 @@ class Game {
       tiles,
       players,
       bombs,
-      players.first,
+      players.last,
     );
   }
 

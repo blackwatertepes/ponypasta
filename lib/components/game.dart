@@ -40,7 +40,7 @@ class GameWidget extends StatelessWidget {
 
     String _endTurnLabel() {
       if (!_isCurrent()) {
-        return "Waiting on ${game.nextPlayer().name}...";
+        return "Waiting on ${game.currentPlayer.name}...";
       }
       return "End Turn";
     }
@@ -61,17 +61,29 @@ class GameWidget extends StatelessWidget {
         tiles: game.tiles,
         onClickTile: (Tile tile) {
           if (_isCurrent()) {
-            final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
-            player.incScore();
-            tile.select();
-            if (tile.hasOwner() && tile.ownerName == "bomb") {
-              gameOver(context, "You've bown up!");
-            }
-            if (tile.hasOwner() && tile.ownerName == game.currentPlayer.name) {
-              if (player.hasWon()) {
-                gameOver(context, "${tile.ownerName} has won!!!");
+            bool canGuess = false;
+            if (tile.hasOwner()) {
+              if (tile.ownerName == "bomb") {
+                tile.select();
+                gameOver(context, "You've bown up!");
+              } else if (tile.ownerName == game.nextPlayer().name) {
+                tile.select();
+                canGuess = true;
+                final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
+                player.incScore();
+                if (player.hasWon()) {
+                  gameOver(context, "${tile.ownerName} has won!!!");
+                }
+              } else {
+                canGuess = true;
               }
+            } else {
+              tile.select();
             }
+            if (!canGuess) {
+              _endTurn();
+            }
+            DatabaseService.updateRoom(game);
           }
         }
       ),

@@ -11,10 +11,10 @@ import '../components/dialogs/new_game.dart';
 import '../utils.dart';
 
 class GameOfflinePage extends StatefulWidget {
-  GameOfflinePage({Key key, this.title}) : super(key: key);
-
   final String title;
   final List<String> turnStates = ['code_viewing', 'guessing'];
+
+  GameOfflinePage({Key key, this.title}) : super(key: key);
 
   List<Tile> tiles = List();
   List<Player> players = List();
@@ -105,7 +105,6 @@ class _GamePageState extends State<GameOfflinePage> {
           onClickTile: (Tile tile) {
             if (widget.canGuess) {
               setState(() {
-                final Player player = widget.players.firstWhere((player) => player.name == tile.ownerName);
                 tile.select();
                 widget.canGuess = false;
                 if (tile.hasOwner() && tile.ownerName == "bomb") {
@@ -113,6 +112,7 @@ class _GamePageState extends State<GameOfflinePage> {
                 }
                 if (tile.hasOwner() && tile.ownerName == widget.currentPlayer.name) {
                   widget.canGuess = true;
+                  final Player player = widget.players.firstWhere((player) => player.name == tile.ownerName);
                   if (player.hasWon()) {
                     gameOver(context, "${tile.ownerName} has won!!!");
                   }

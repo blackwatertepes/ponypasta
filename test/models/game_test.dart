@@ -16,7 +16,7 @@ void main() {
         expect(game.tiles.length, 25);
         expect(game.players.length, 2);
         expect(game.bombs.length, 2);
-        expect(game.currentPlayer.name, 'red');
+        expect(game.currentPlayer.name, 'blue');
         expect(game.tiles.where((tile) => tile.ownerName == 'red').length, 7);
         expect(game.tiles.where((tile) => tile.ownerName == 'blue').length, 6);
         // expect(game.tiles.where((tile) => tile.ownerName == 'bomb').length, 2); // TODO
@@ -25,16 +25,16 @@ void main() {
 
     group('endTurn', () {
       test('assign the next player to currentPlayer', () {
-        expect(game.currentPlayer.name, 'red');
-        game.endTurn();
         expect(game.currentPlayer.name, 'blue');
+        game.endTurn();
+        expect(game.currentPlayer.name, 'red');
       });
     });
 
     group('nextPlayer', () {
       test('returns the next player in the list', () {
-        expect(game.currentPlayer.name, 'red');
-        expect(game.nextPlayer().name, 'blue');
+        expect(game.currentPlayer.name, 'blue');
+        expect(game.nextPlayer().name, 'red');
       });
     });
   });
