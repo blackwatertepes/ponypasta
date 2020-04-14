@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 import './create_game.dart';
 import './game_offline.dart';
 import './find_game.dart';
+import '../utils/utils.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({Key key, this.title}) : super(key: key);
@@ -18,12 +18,6 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    String _generateRoomId() {
-      final Random random = new Random();
-      final int rand = random.nextInt(900000) + 100000;
-      return rand.toString();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +43,7 @@ class _MenuPageState extends State<MenuPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CreateGamePage(title: widget.title, roomId: _generateRoomId())
+                    builder: (context) => CreateGamePage(title: widget.title, roomId: generateRandom(1000000).toString())
                   )
                 );
               },
