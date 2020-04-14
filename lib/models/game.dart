@@ -1,7 +1,12 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
+import '../data/words.dart';
+import '../models/player.dart';
+import '../models/tile.dart';
 import './player.dart';
 import './tile.dart';
+import '../utils.dart';
 
 class Game {
   String roomId;
@@ -23,6 +28,49 @@ class Game {
     this.players = players;
     this.bombs = bombs;
     this.currentPlayer = currentPlayer;
+  }
+
+  static addTilesForPlayer(Player player, List<Tile>tiles) {
+    while (tiles.where((tile) => tile.ownerName == player.name).length < player.tileCount) {
+      List<Tile> unassignedTiles = tiles.where((tile) => !tile.hasOwner()).toList();
+      int n = Random().nextInt(unassignedTiles.length);
+      Tile tile = unassignedTiles[n];
+      tile.ownerName = player.name;
+    }
+  }
+
+  static generate(String roomId) {
+    List<Tile> tiles = getRandomWords(words(), 25).map((word) => Tile.fromWord(word)).toList();
+
+    List<Player> players = [
+      new Player('red', Colors.red[100], Colors.red, 7), // 9 for normal
+      new Player('blue', Colors.blue[100], Colors.blue, 6), // 8 for normal
+    ];
+
+    List<Player> bombs = [ // 1 bomb for normal game play
+      new Player('bomb', Colors.grey, Colors.grey, 1),
+      new Player('bomb', Colors.grey, Colors.grey, 1),
+    ];
+
+    players.forEach((player) => addTilesForPlayer(player, tiles));
+    bombs.forEach((player) => addTilesForPlayer(player, tiles));
+
+    return new Game(
+      roomId,
+      tiles,
+      players,
+      bombs,
+      players.first,
+    );
+  }
+
+  Player nextPlayer() {
+    String playerName = nextInList(this.players.map((player) => player.name).toList(), this.currentPlayer.name);
+    return this.players.firstWhere((player) => player.name == playerName);
+  }
+
+  void endTurn() {
+    currentPlayer = nextPlayer();
   }
 
   factory Game.fromMap(Map<String, dynamic> map) { //, {this.reference})

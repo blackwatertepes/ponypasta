@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../lib/utils/utils.dart';
+import '../lib/utils.dart';
 
 void main() {
   group('generateRandom', () {

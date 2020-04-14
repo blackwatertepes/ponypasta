@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import '../data/words.dart';
 import '../models/player.dart';
 import '../models/tile.dart';
+import '../models/game.dart';
 import '../components/board.dart';
 import '../components/pips.dart';
 import '../components/dialogs/game_over.dart';
 import '../components/dialogs/new_game.dart';
-import '../utils/game.dart';
-import '../utils/utils.dart';
+import '../utils.dart';
 
 class GameOfflinePage extends StatefulWidget {
   GameOfflinePage({Key key, this.title}) : super(key: key);
@@ -49,8 +49,8 @@ class _GamePageState extends State<GameOfflinePage> {
         new Player('bomb', Colors.grey, Colors.grey, 1),
       ];
 
-      game.players.forEach((player) => addTilesForPlayer(player, game.tiles));
-      game.bombs.forEach((player) => addTilesForPlayer(player, game.tiles));
+      game.players.forEach((player) => Game.addTilesForPlayer(player, game.tiles));
+      game.bombs.forEach((player) => Game.addTilesForPlayer(player, game.tiles));
 
       game.currentTurnState = game.turnStates.first;
       game.currentPlayer = game.players.first;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './create_game.dart';
 import './game_offline.dart';
 import './find_game.dart';
-import '../utils/utils.dart';
+import '../utils.dart';
 
 class MenuPage extends StatefulWidget {
   MenuPage({Key key, this.title}) : super(key: key);

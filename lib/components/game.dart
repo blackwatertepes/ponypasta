@@ -7,7 +7,6 @@ import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
-import '../utils/utils.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId, this.isPlayer}) : super(key: key);
@@ -55,21 +54,16 @@ class _GamePageState extends State<GamePage> {
       return game.currentPlayer.name == widget.isPlayer;
     }
 
-    Player _nextPlayer(game) {
-      String playerName = nextInList(game.players.map((player) => player.name).toList(), game.currentPlayer.name);
-      return game.players.firstWhere((player) => player.name == playerName);
-    }
-
     String _endTurnLabel() {
       if (!_isCurrent()) {
-        return "Waiting on ${_nextPlayer(game).name}...";
+        return "Waiting on ${game.nextPlayer().name}...";
       }
       return "End Turn";
     }
 
     void _endTurn() {
       if (_isCurrent()) {
-        game.currentPlayer = _nextPlayer(game);
+        game.endTurn();
         _updateRoom();
       }
     }
