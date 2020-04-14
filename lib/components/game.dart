@@ -72,7 +72,7 @@ class GameWidget extends StatelessWidget {
                 final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
                 player.incScore();
                 if (player.hasWon()) {
-                  gameOver(context, "${tile.ownerName} has won!!!");
+                  gameOver(context, "You've won!!!");
                 }
               } else {
                 canGuess = true;
