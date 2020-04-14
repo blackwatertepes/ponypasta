@@ -5,37 +5,25 @@ import '../components/dialogs/new_game.dart';
 import '../models/game.dart';
 import '../services/database.dart';
 
-class CreateGamePage extends StatefulWidget {
-  CreateGamePage({Key key, this.title, this.roomId}) : super(key: key);
-
+class CreateGamePage extends StatelessWidget {
   final String title;
   final String roomId;
-  Game game;
 
-  @override
-  _GamePageState createState() => _GamePageState();
-}
-
-class _GamePageState extends State<CreateGamePage> {
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsFlutterBinding.ensureInitialized();
-    widget.game = Game.generate(widget.roomId);
-    DatabaseService.createRoom(widget.game);
-  }
+  CreateGamePage({Key key, this.title, this.roomId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
+    Game game = Game.generate(this.roomId);
+    DatabaseService.createRoom(game);
+
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("${widget.title} | ${widget.roomId}")),
+        title: Center(child: Text("${this.title} | ${this.roomId}")),
       ),
-      body: GamePage(
-              title: widget.title,
-              roomId: widget.roomId,
+      body: GameWidget(
+              title: this.title,
+              roomId: this.roomId,
               isPlayer: 'red'
             // Divider(),
             // FractionallySizedBox(

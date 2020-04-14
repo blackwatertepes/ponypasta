@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import './join_game.dart';
 
 class FindGamePage extends StatefulWidget {
-  FindGamePage({Key key, this.title}) : super(key: key);
-
   final String title;
   String roomId;
+
+  FindGamePage({Key key, this.title}) : super(key: key);
 
   @override
   _FindGamePageState createState() => _FindGamePageState();

@@ -8,13 +8,13 @@ import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
 import '../services/database.dart';
 
-class GamePage extends StatelessWidget {
+class GameWidget extends StatelessWidget {
   final String title;
   final String roomId;
   final String isPlayer;
   Game game;
 
-  GamePage({Key key, this.title, this.roomId, this.isPlayer}) : super(key: key);
+  GameWidget({Key key, this.title, this.roomId, this.isPlayer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

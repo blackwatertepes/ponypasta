@@ -5,23 +5,17 @@ import './game_offline.dart';
 import './find_game.dart';
 import '../utils.dart';
 
-class MenuPage extends StatefulWidget {
-  MenuPage({Key key, this.title}) : super(key: key);
-
+class MenuPage extends StatelessWidget {
   final String title;
 
-  @override
-  _MenuPageState createState() => _MenuPageState();
-}
-
-class _MenuPageState extends State<MenuPage> {
+  MenuPage({Key key, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text(widget.title)),
+        title: Center(child: Text(this.title)),
       ),
       body: Container(
         color: Colors.grey[100],
@@ -43,7 +37,7 @@ class _MenuPageState extends State<MenuPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CreateGamePage(title: widget.title, roomId: generateRandom(1000000).toString())
+                    builder: (context) => CreateGamePage(title: this.title, roomId: generateRandom(1000000).toString())
                   )
                 );
               },
@@ -60,7 +54,7 @@ class _MenuPageState extends State<MenuPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FindGamePage(title: widget.title)
+                    builder: (context) => FindGamePage(title: this.title)
                   )
                 );
               },
@@ -83,7 +77,7 @@ class _MenuPageState extends State<MenuPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GameOfflinePage(title: widget.title))
+                  MaterialPageRoute(builder: (context) => GameOfflinePage(title: this.title))
                 );
               },
               child: Text('Single Phone Game (Offline Mode)')
