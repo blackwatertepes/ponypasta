@@ -67,27 +67,21 @@ class _GamePageState extends State<CreateGamePage> {
       appBar: AppBar(
         title: Center(child: Text("${widget.title} | ${widget.roomId}")),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            GamePage(
+      body: GamePage(
               title: widget.title,
               roomId: widget.roomId,
               isPlayer: 'red'
-            ),
-            Divider(),
-            FractionallySizedBox(
-              widthFactor: 0.9,
-              child: OutlineButton(
-                onPressed: () { neverSatisfied(context, () {
-                  setState(() => newGame(widget));
-                  _updateRoom();
-                }); },
-                child: const Text('New Game'),
-              ),
-            ),
-          ]
-        )
+            // Divider(),
+            // FractionallySizedBox(
+            //   widthFactor: 0.9,
+            //   child: OutlineButton(
+            //     onPressed: () { neverSatisfied(context, () {
+            //       setState(() => newGame(widget));
+            //       _updateRoom();
+            //     }); },
+            //     child: const Text('New Game'),
+            //   ),
+            // ),
       )
     );
   }

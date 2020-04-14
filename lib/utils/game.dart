@@ -28,4 +28,6 @@ void newGame(game) {
 
   game.players.forEach((player) => addTilesForPlayer(player, game.tiles));
   game.bombs.forEach((player) => addTilesForPlayer(player, game.tiles));
+
+  game.currentPlayer = game.players.first;
 }

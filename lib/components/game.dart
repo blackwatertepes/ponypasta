@@ -25,13 +25,12 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: '346861').snapshots(),
+      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: widget.roomId).limit(1).snapshots(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting: return new Text('Loading...');
-          default: return buildGame(context, Game.fromMap(snapshot.data.documents[0].data));
-        }
+        if (snapshot.connectionState == ConnectionState.waiting) return new Text('Loading...');
+        if (snapshot.data.documents.length > 0) return buildGame(context, Game.fromMap(snapshot.data.documents.first.data));
+        return new Text("Something went wrong!");
       }
     );
   }
@@ -41,8 +40,11 @@ class _GamePageState extends State<GamePage> {
       WidgetsFlutterBinding.ensureInitialized();
       CollectionReference _gamesCol = Firestore.instance.collection("games");
 
-      // DocumentReference _gameDoc = _gamesCol.where("roomId", isEqualTo: widget.roomId).getDocuments();
-      // await _gameDoc.updateData(widget.game.toMap());
+      QuerySnapshot _query = await _gamesCol.where("roomId", isEqualTo: widget.roomId).limit(1).getDocuments();
+      if (_query.documents.length > 0) {
+        DocumentReference _docRef = _gamesCol.document(_query.documents.first.documentID);
+        await _docRef.updateData(game.toMap());
+      }
     }
 
     Player _isPlayer() {
@@ -54,7 +56,8 @@ class _GamePageState extends State<GamePage> {
     }
 
     Player _nextPlayer(game) {
-      return nextInList(game.players, game.currentPlayer);
+      String playerName = nextInList(game.players.map((player) => player.name).toList(), game.currentPlayer.name);
+      return game.players.firstWhere((player) => player.name == playerName);
     }
 
     String _endTurnLabel() {
@@ -71,40 +74,38 @@ class _GamePageState extends State<GamePage> {
       }
     }
 
-    return Container(
-      child: Column(children: <Widget>[
-        Pips(players: game.players),
-        Board(
-          currentPlayer: _isPlayer(),
-          players: game.players,
-          isCodeViewing: true,
-          tiles: game.tiles,
-          onClickTile: (Tile tile) {
-            if (_isCurrent()) {
-              setState(() {
-                final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
-                player.incScore();
-                tile.select();
-                if (tile.hasOwner() && tile.ownerName == "bomb") {
-                  gameOver(context, "You've bown up!");
+    return Column(children: <Widget>[
+      Pips(players: game.players),
+      Board(
+        currentPlayer: _isPlayer(),
+        players: game.players,
+        isCodeViewing: true,
+        tiles: game.tiles,
+        onClickTile: (Tile tile) {
+          if (_isCurrent()) {
+            setState(() {
+              final Player player = game.players.firstWhere((player) => player.name == tile.ownerName);
+              player.incScore();
+              tile.select();
+              if (tile.hasOwner() && tile.ownerName == "bomb") {
+                gameOver(context, "You've bown up!");
+              }
+              if (tile.hasOwner() && tile.ownerName == game.currentPlayer.name) {
+                if (player.hasWon()) {
+                  gameOver(context, "${tile.ownerName} has won!!!");
                 }
-                if (tile.hasOwner() && tile.ownerName == game.currentPlayer.name) {
-                  if (player.hasWon()) {
-                    gameOver(context, "${tile.ownerName} has won!!!");
-                  }
-                }
-              });
-            }
+              }
+            });
           }
+        }
+      ),
+      FractionallySizedBox(
+        widthFactor: 0.9,
+        child: OutlineButton(
+          onPressed: () { _endTurn(); },
+          child: Text(_endTurnLabel()),
         ),
-        FractionallySizedBox(
-          widthFactor: 0.9,
-          child: OutlineButton(
-            onPressed: () { setState(() => _endTurn()); },
-            child: Text(_endTurnLabel()),
-          ),
-        ),
-      ])
-    );
+      ),
+    ]);
   }
 }
