@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/game.dart';
 import '../models/player.dart';
@@ -7,6 +6,7 @@ import '../models/tile.dart';
 import '../components/Board.dart';
 import '../components/Pips.dart';
 import '../components/dialogs/game_over.dart';
+import '../services/database.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key, this.title, this.roomId, this.isPlayer}) : super(key: key);
@@ -24,7 +24,7 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Firestore.instance.collection('games').where("roomId", isEqualTo: widget.roomId).limit(1).snapshots(),
+      stream: DatabaseService.stream(widget.roomId),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
         if (snapshot.connectionState == ConnectionState.waiting) return new Text('Loading...');
@@ -35,17 +35,6 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildGame(BuildContext context, Game game) {
-    Future<void> _updateRoom() async {
-      WidgetsFlutterBinding.ensureInitialized();
-      CollectionReference _gamesCol = Firestore.instance.collection("games");
-
-      QuerySnapshot _query = await _gamesCol.where("roomId", isEqualTo: widget.roomId).limit(1).getDocuments();
-      if (_query.documents.length > 0) {
-        DocumentReference _docRef = _gamesCol.document(_query.documents.first.documentID);
-        await _docRef.updateData(game.toMap());
-      }
-    }
-
     Player _isPlayer() {
       return game.players.firstWhere((player) => player.name == widget.isPlayer);
     }
@@ -64,7 +53,7 @@ class _GamePageState extends State<GamePage> {
     void _endTurn() {
       if (_isCurrent()) {
         game.endTurn();
-        _updateRoom();
+        DatabaseService.updateRoom(game);
       }
     }
 
